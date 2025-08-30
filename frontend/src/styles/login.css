@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif
+}
+
+body {
+    background: linear-gradient(to right, #38058a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: rgba(224, 224, 224, 0.9);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+    color: #333;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9)
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+.login-container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #213083
+}
+
+.login-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #1d2b77
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #b0bec5;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #eceff1;
+    color: #333;
+}
+
+.login-container input:focus {
+    outline: none;
+    border-color: #1e2b72;
+    box-shadow: 0 0 8px rgba(25, 40, 122, 0.7)
+}
+
+.login-container a {
+    display: block;
+    color: #0d1857;
+    text-decoration: none;
+    margin-bottom: 15px
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #2f3c81;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer
+}
+
+.register-text {
+    margin-top: 15px;
+    font-size: 14px
+}
+
+.register-text a {
+    color: #1f34ad;
+    font-weight: bold
+}
+
+.mensagem {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center
+}
+
+.mensagem.erro {
+    background-color: #f8d7da;
+    color: #721c24
+}
+
+.mensagem.sucesso {
+    background-color: #d4edda;
+    color: #155724
+}
