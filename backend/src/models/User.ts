@@ -10,7 +10,7 @@ interface UserAttributes {
   updatedAt?: Date;
 }
 
-type UserCreationAttributes = Optional<UserAttributes, 'id' | 'passwordHash' | 'createdAt' | 'updatedAt'>;
+type UserCreationAttributes = Optional<UserAttributes, 'id' | 'passwordHash' | 'createdAt' | 'updatedAt'>; // Fields optional during creation
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;

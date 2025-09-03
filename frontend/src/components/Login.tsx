@@ -4,7 +4,7 @@ import { api } from '../api'
 import { setToken } from '../auth'
 import '../styles/login.css'
 
-export default function Login({ onSuccess }: { onSuccess: () => void }) {
+export default function Login({ onSuccess }: { readonly onSuccess: () => void }) {
     const [emailOrUser, setEmailOrUser] = useState('') // você pode aceitar e-mail ou usuário
     const [password, setPassword] = useState('')
     const [msg, setMsg] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
