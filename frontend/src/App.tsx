@@ -4,6 +4,8 @@ import './styles/cadastro.css'
 import Login from './components/Login'
 import Home from './components/Home'
 import Metas from './components/Metas'
+import TransactionForm from './components/TransactionForm'
+import TransactionTable from './components/Transacoes/TransactionTable'
 
 export default function App() {
   return (
@@ -13,6 +15,8 @@ export default function App() {
       <Route path='/home' element={<Home />} />
       <Route path='/login' element={<Login onSuccess={() => window.location.href = '/home'} />} />
       <Route path='/metas' element={<Metas />} />
+      <Route path="/transacoes" element={<TransactionForm />} />
     </Routes>
+
   )
 }

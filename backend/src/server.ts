@@ -5,6 +5,7 @@ import sequelize from './db';
 import './models/User';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
+import transactionsRoutes from './routes/transactions';
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use('/api/transacoes', transactionsRoutes);
 
 const port = Number(process.env.PORT || 3000);
 
