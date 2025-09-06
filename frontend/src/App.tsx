@@ -5,7 +5,7 @@ import Login from './components/Login'
 import Home from './components/Home'
 import Metas from './components/Metas'
 import TransactionForm from './components/TransactionForm'
-import TransactionTable from './components/Transacoes/TransactionTable'
+import MetasForm from './components/MetasForm'
 
 export default function App() {
   return (
@@ -14,8 +14,8 @@ export default function App() {
       <Route path='/cadastro' element={<Cadastro />} />
       <Route path='/home' element={<Home />} />
       <Route path='/login' element={<Login onSuccess={() => window.location.href = '/home'} />} />
-      <Route path='/metas' element={<Metas />} />
       <Route path="/transacoes" element={<TransactionForm />} />
+      <Route path="/metas" element={<MetasForm />} />
     </Routes>
 
   )

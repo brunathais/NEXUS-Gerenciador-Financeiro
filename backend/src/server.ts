@@ -6,6 +6,7 @@ import './models/User';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
 import transactionsRoutes from './routes/transactions';
+import metasRoutes from './routes/metas';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use('/api/transacoes', transactionsRoutes);
+app.use('/api/metas', metasRoutes);
 
 const port = Number(process.env.PORT || 3000);
 

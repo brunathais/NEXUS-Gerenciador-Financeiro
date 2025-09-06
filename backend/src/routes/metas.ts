@@ -1,32 +1,29 @@
-import { Router } from "express";
+import { Router, Request, Response } from 'express';
+import Meta from '../models/Metas';
 
 const router = Router();
 
-router.post("/metas", async (req, res) => {
-    try{
-        const{ nomeMeta, valorInicial, valorTotal } = req.body as {nomeMeta?: string, valorInicial?: number, valorTotal?: number}; 
-        if(!nomeMeta || !valorInicial || !valorTotal) {
-            return res.status(400).json({message: 'nomeMeta, valorInicial e valorTotal são obrigatórios.'});
+/**
+ * POST /api/transacoes
+ * body: { descricao: string, valorTotal: number, valorInicial: string, data: Date }
+ */
+router.post('/', async (req: Request, res: Response) => {
+    try {
+        const { descricao, valorTotal, valorInicial, data } = req.body;
+
+        // Validação dos campos (os campos valorInicial e descricao são obrigatórios, etc.)
+        if (!descricao || !valorTotal || !valorInicial || !data) {
+            return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
         }
-        // Lógica para salvar a meta no banco de dados
-        return res.status(201).json({message: 'Meta criada com sucesso.'});
-    } catch(err) { // Captura de erros
-        console.error(err); // Log do erro para depuração
-        return res.status(500).json({message: 'Erro interno ao criar meta.'}); // Erro genérico
+
+        // Cria a transação no banco
+        const meta = await Meta.create({ descricao, valorTotal, valorInicial, data });
+
+        return res.status(201).json(meta); // Retorna a transação criada
+    } catch (error) {
+        console.error('Erro ao cadastrar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao cadastrar transação' });
     }
+});
 
-    })
-
-    router.get("/metas",async (req, res) =>{
-        try{
-            // Lógica para buscar as metas no banco de dados
-            return res.json([]); // Retorna a lista de metas (atualmente vazia)
-        } catch(err) {
-            console.error(err); // Log do erro para depuração
-            return res.status(500).json({message: 'Erro interno ao buscar metas.'}); // Erro genérico
-
-
-
-        }
-    })
-    export default router;
+export default router;
