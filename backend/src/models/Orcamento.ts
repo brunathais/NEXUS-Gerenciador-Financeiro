@@ -1,14 +1,15 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../db'; // Adjust path if needed
+import sequelize from '../db';
 
-class Metas extends Model {
+class Orcamento extends Model {
     public id!: number;
     public descricao!: string;
-    public valor!: number;
-    public data!: Date;
+    public essenciais!: number;
+    public naoEssenciais!: number;
+    public poupanca!: number;
 }
 
-Metas.init(
+Orcamento.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -19,21 +20,25 @@ Metas.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        valor: {
+        essenciais: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        data: {
-            type: DataTypes.DATE,
+        naoEssenciais: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        poupanca: {
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
     },
     {
         sequelize,
-        modelName: 'Metas',
-        tableName: 'metas',
+        modelName: 'Orcamento',
+        tableName: 'orcamentos',
         timestamps: false,
     }
 );
 
-export default Metas;
+export default Orcamento;

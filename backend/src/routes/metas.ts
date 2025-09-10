@@ -1,28 +1,23 @@
 import { Router, Request, Response } from 'express';
-import Meta from '../models/Metas';
+import Metas from '../models/Metas';
 
 const router = Router();
 
-/**
- * POST /api/transacoes
- * body: { descricao: string, valorTotal: number, valorInicial: string, data: Date }
- */
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const { descricao, valorTotal, valorInicial, data } = req.body;
+        const { descricao, valor, data } = req.body;
 
-        // Validação dos campos (os campos valorInicial e descricao são obrigatórios, etc.)
-        if (!descricao || !valorTotal || !valorInicial || !data) {
+        // Validação dos campos (os campos tipo e descricao são obrigatórios, etc.)
+        if (!descricao || !valor || !data) {
             return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
         }
 
-        // Cria a transação no banco
-        const meta = await Meta.create({ descricao, valorTotal, valorInicial, data });
+        const meta = await Metas.create({ descricao, valor, data });
 
-        return res.status(201).json(meta); // Retorna a transação criada
+        return res.status(201).json(meta);
     } catch (error) {
         console.error('Erro ao cadastrar transação:', error);
-        return res.status(500).json({ message: 'Erro interno ao cadastrar transação' });
+        return res.status(500).json({ message: 'Erro interno ao cadastrar meta' });
     }
 });
 

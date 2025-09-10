@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { api } from '../api';
 import { useNavigate } from 'react-router-dom';
 
-export default function MetasForm() {
+export default function OrcamentoForm() {
     const [descricao, setDescricao] = useState('');
-    const [valor, setValor] = useState<number | string>('');
-    const [data, setData] = useState('');
+    const [essenciais, setEssenciais] = useState<string>('');
+    const [naoEssenciais, setNaoEssenciais] = useState<string | number>('');
+    const [poupanca, setPoupanca] = useState<string | number>('');
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -15,11 +16,11 @@ export default function MetasForm() {
         setMsg(null);
         setLoading(true);
         try {
-            await api.post('/metas', { descricao, valor, data });
-            setMsg('meta criada com sucesso!');
+            await api.post('/orcamentos', { descricao, essenciais, naoEssenciais, poupanca });
+            setMsg('orcamento criada com sucesso!');
             setTimeout(() => navigate('/home'), 1000); // Redireciona após 1 segundo
         } catch (err: any) {
-            const msg = err?.response?.data?.message || 'Erro ao criar meta';
+            const msg = err?.response?.data?.message || 'Erro ao criar orcamento';
             setMsg(msg);
         } finally {
             setLoading(false);
@@ -40,22 +41,32 @@ export default function MetasForm() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="valor">Valor</label>
+                    <label htmlFor="essenciais">essenciais</label>
                     <input
-                        id="valor"
+                        id="essenciais"
                         type="number"
-                        value={valor}
-                        onChange={(e) => setValor(e.target.value)}
+                        value={essenciais}
+                        onChange={(e) => setEssenciais(e.target.value)}
                         required
                     />
                 </div>
                 <div>
-                    <label htmlFor="data">Data</label>
+                    <label htmlFor="naoEssenciais">naoEssenciais</label>
                     <input
-                        id="data"
-                        type="date"
-                        value={data}
-                        onChange={(e) => setData(e.target.value)}
+                        id="naoEssenciais"
+                        type="number"
+                        value={naoEssenciais}
+                        onChange={(e) => setNaoEssenciais(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="poupanca">poupanca</label>
+                    <input
+                        id="poupanca"
+                        type="number"
+                        value={poupanca}
+                        onChange={(e) => setPoupanca(e.target.value)}
                         required
                     />
                 </div>
