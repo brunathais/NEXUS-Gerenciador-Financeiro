@@ -8,6 +8,7 @@ export default function MetasForm() {
     const [data, setData] = useState('');
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
+
     const navigate = useNavigate();
 
     async function handleSubmit(e: React.FormEvent) {
@@ -27,7 +28,9 @@ export default function MetasForm() {
     }
 
     return (
+
         <div className="transaction-container">
+                 <link rel="stylesheet" href="metas.css" />
             <h1>Registrar meta</h1>
             <form onSubmit={handleSubmit}>
                 <div>

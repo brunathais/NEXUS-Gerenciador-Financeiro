@@ -6,6 +6,7 @@ import Home from './components/Home'
 import TransactionForm from './components/TransactionForm'
 import MetasForm from './components/MetasForm'
 import OrcamentoForm from './components/Orcamento'
+import './styles/metas.css'
 
 export default function App() {
   return (
