@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { api } from '../api';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { api } from '../api'; // Certifique-se de que o 'api' está configurado corretamente
 
 export default function TransactionForm() {
     const [descricao, setDescricao] = useState('');
@@ -8,17 +7,39 @@ export default function TransactionForm() {
     const [tipo, setTipo] = useState('Entrada');
     const [data, setData] = useState('');
     const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState<string | null>(null);
-    const navigate = useNavigate();
+    const [msg, setMsg] = useState<string | null>(null); // Estado para mensagens de feedback
+    const [transacoes, setTransacoes] = useState<any[]>([]); // Estado para armazenar as transações
+
+    // Função para buscar as transações
+    const fetchTransacoes = async () => {
+        try {
+            const response = await api.get('/transacoes'); // Faz a requisição GET para buscar as transações
+            setTransacoes(response.data); // Atualiza o estado com as transações
+        } catch (err) {
+            console.error('Erro ao carregar transações:', err);
+            setMsg('Erro ao carregar as transações');
+        }
+    };
+
+    // Chama a função fetchTransacoes quando o componente for montado
+    useEffect(() => {
+        fetchTransacoes();
+    }, []); // O array vazio significa que o efeito roda apenas uma vez, no momento em que o componente é montado
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setMsg(null);
         setLoading(true);
         try {
+            // Envia os dados da transação para o backend
             await api.post('/transacoes', { descricao, valor, tipo, data });
             setMsg('Transação criada com sucesso!');
-            setTimeout(() => navigate('/home'), 1000); // Redireciona após 1 segundo
+            fetchTransacoes(); // Atualiza a lista de transações após cadastrar uma nova
+            // Limpa o formulário após o envio (opcional)
+            setDescricao('');
+            setValor('');
+            setTipo('Entrada');
+            setData('');
         } catch (err: any) {
             const msg = err?.response?.data?.message || 'Erro ao criar transação';
             setMsg(msg);
@@ -72,6 +93,22 @@ export default function TransactionForm() {
                 </button>
             </form>
             {msg && <p>{msg}</p>}
+
+            <h2>Transações Cadastradas</h2>
+            <ul>
+                {transacoes.length === 0 ? (
+                    <li>Não há transações registradas.</li>
+                ) : (
+                    transacoes.map((transacao) => (
+                        <li key={transacao.id}>
+                            <strong>{transacao.descricao}</strong><br />
+                            Valor: {transacao.valor}<br />
+                            Tipo: {transacao.tipo}<br />
+                            Data: {new Date(transacao.data).toLocaleDateString()}
+                        </li>
+                    ))
+                )}
+            </ul>
         </div>
     );
 }

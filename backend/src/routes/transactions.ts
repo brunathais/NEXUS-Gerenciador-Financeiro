@@ -3,6 +3,17 @@ import Transacao from '../models/Transacao';
 
 const router = Router();
 
+// Rota para buscar todas as transações
+router.get('/', async (req: Request, res: Response) => {
+    try {
+        const transacoes = await Transacao.findAll(); // Busca todas as transações no banco
+        return res.status(200).json(transacoes); // Retorna as transações em formato JSON
+    } catch (error) {
+        console.error('Erro ao buscar transações:', error);
+        return res.status(500).json({ message: 'Erro interno ao buscar transações' });
+    }
+});
+
 /**
  * POST /api/transacoes
  * body: { descricao: string, valor: number, tipo: string, data: Date }
@@ -25,5 +36,6 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Erro interno ao cadastrar transação' });
     }
 });
+
 
 export default router;
