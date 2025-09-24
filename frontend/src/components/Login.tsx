@@ -31,17 +31,21 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
         }
     }
 
+    const handleCadastro = () => {
+        navigate('/cadastro');
+    };
+
     return (
         <div className="login-container">
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email</label>
-                    <input
-                        type="email"
+                    <input type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        title="Email"
                     />
                 </div>
                 <div>
@@ -52,12 +56,16 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         minLength={6}
+                        title="Senha (mínimo 6 caracteres)"
                     />
                 </div>
                 <button type="submit" disabled={loading}>
                     {loading ? 'Entrando...' : 'Entrar'}
                 </button>
+
             </form>
+            <button onClick={handleCadastro}>Não tem uma conta? Cadastre-se</button>
+
 
             {msg && <p>{msg}</p>}
         </div>
