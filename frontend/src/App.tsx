@@ -6,6 +6,8 @@ import TransactionForm from './components/TransactionForm';
 import MetasForm from './components/MetasForm';
 import OrcamentoForm from './components/Orcamento';
 import Header from './components/header';
+import EducacaoFinanceira from './components/EducacaoFinanceira';
+import ContasBoletos from './components/ContasBoletos';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -28,6 +30,10 @@ export default function App() {
       <Route path="/metas" element={<MetasForm />} />
       <Route path ="/orcamento" element = {<OrcamentoForm />} />
       <Route path ="/header" element = {<Header/>} />
+      <Route path ="/Educacao-financeira" element = {<EducacaoFinanceira/>} />
+      <Route path="/contas" element={<ContasBoletos />} />
+
+  
 
 
     </Routes>

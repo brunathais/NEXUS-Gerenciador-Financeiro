@@ -52,6 +52,9 @@ export default function Home() {
         <button onClick={()=> handleNavigation ('/transacoes')}>
             Transações
         </button>
+        <button onClick={()=> handleNavigation ('/cadastro')}>
+            Cadastro
+        </button>
     </div>
 
 
