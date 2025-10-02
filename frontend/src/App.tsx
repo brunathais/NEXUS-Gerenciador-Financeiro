@@ -4,10 +4,11 @@ import Login from './components/Login';
 import Home from './components/Home';
 import TransactionForm from './components/TransactionForm';
 import MetasForm from './components/MetasForm';
-import OrcamentoForm from './components/Orcamento';
 import Header from './components/header';
 import EducacaoFinanceira from './components/EducacaoFinanceira';
 import ContasBoletos from './components/ContasBoletos';
+import OrcamentoForm from './components/Orcamento';
+import TransactionSummary from './components/TransactionSummary';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -15,12 +16,6 @@ export default function App() {
   };
 
   return (
-    <>
-    <Header/>
-
-    {/*conteudo principal que muda de acordo com a rota */}
-
-    
     <Routes>
       <Route path='/' element={<Navigate to="/cadastro" />} />
       <Route path='/cadastro' element={<Cadastro />} />
@@ -28,15 +23,14 @@ export default function App() {
       <Route path='/home' element={<Home />} />
       <Route path="/transacoes" element={<TransactionForm />} />
       <Route path="/metas" element={<MetasForm />} />
-      <Route path ="/orcamento" element = {<OrcamentoForm />} />
+      <Route path="/orcamentos" element={<OrcamentoForm />} />
+      <Route path="/soma-categoria" element={<TransactionSummary />} />
+          
+
       <Route path ="/header" element = {<Header/>} />
       <Route path ="/Educacao-financeira" element = {<EducacaoFinanceira/>} />
       <Route path="/contas" element={<ContasBoletos />} />
-
-  
-
-
     </Routes>
-    </>
   );
 }
+

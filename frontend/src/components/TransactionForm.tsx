@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
-import { api } from '../api'; // Certifique-se de que o 'api' está configurado corretamente
+import { api } from '../api';
+import TransactionSummary from './TransactionSummary';
 
 export default function TransactionForm() {
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState<number | string>('');
-    const [tipo, setTipo] = useState('Entrada');
+    const [tipo, setTipo] = useState('Entrada'); // Tipo da transação (Entrada ou Saída)
     const [data, setData] = useState('');
+    const [categoria, setCategoria] = useState(''); // Categoria é opcional para "Entrada"
     const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState<string | null>(null); // Estado para mensagens de feedback
-    const [transacoes, setTransacoes] = useState<any[]>([]); // Estado para armazenar as transações
+    const [msg, setMsg] = useState<string | null>(null);
+    const [transacoes, setTransacoes] = useState<any[]>([]);
 
     // Função para buscar as transações
     const fetchTransacoes = async () => {
         try {
-            const response = await api.get('/transacoes'); // Faz a requisição GET para buscar as transações
-            setTransacoes(response.data); // Atualiza o estado com as transações
+            const response = await api.get('/transacoes');
+            setTransacoes(response.data);
         } catch (err) {
             console.error('Erro ao carregar transações:', err);
             setMsg('Erro ao carregar as transações');
@@ -24,22 +26,30 @@ export default function TransactionForm() {
     // Chama a função fetchTransacoes quando o componente for montado
     useEffect(() => {
         fetchTransacoes();
-    }, []); // O array vazio significa que o efeito roda apenas uma vez, no momento em que o componente é montado
+    }, []);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setMsg(null);
         setLoading(true);
         try {
+            // Valida se categoria foi preenchida para Saída/Despesa
+            if (tipo === 'Saída' && !categoria) {
+                setMsg('A categoria é obrigatória para transações de saída.');
+                return;
+            }
+
+            //add imprevistos!!
             // Envia os dados da transação para o backend
-            await api.post('/transacoes', { descricao, valor, tipo, data });
+            await api.post('/transacoes', { descricao, valor, tipo, data, categoria: tipo === 'Saída' ? categoria : null });
             setMsg('Transação criada com sucesso!');
             fetchTransacoes(); // Atualiza a lista de transações após cadastrar uma nova
-            // Limpa o formulário após o envio (opcional)
+            // Limpa o formulário após o envio
             setDescricao('');
             setValor('');
             setTipo('Entrada');
             setData('');
+            setCategoria(''); // Reseta a categoria
         } catch (err: any) {
             const msg = err?.response?.data?.message || 'Erro ao criar transação';
             setMsg(msg);
@@ -49,6 +59,7 @@ export default function TransactionForm() {
     }
 
     return (
+
         <div className="transaction-container">
             <h1>Registrar Transação</h1>
             <form onSubmit={handleSubmit}>
@@ -88,12 +99,30 @@ export default function TransactionForm() {
                         required
                     />
                 </div>
+
+                {/* Exibe o campo de categoria apenas se o tipo for "Saída" */}
+                {tipo === 'Saída' && (
+                    <div>
+                        <label htmlFor="categoria">Categoria</label>
+                        <select
+                            id="categoria"
+                            value={categoria}
+                            onChange={(e) => setCategoria(e.target.value)}
+                            required
+                        >
+                            <option value="">Selecione</option>
+                            <option value="Essenciais">Essenciais</option>
+                            <option value="Não essenciais">Não essenciais</option>
+                            <option value="Imprevistos">Imprevistos</option>
+                        </select>
+                    </div>
+                )}
+
                 <button type="submit" disabled={loading}>
                     {loading ? 'Cadastrando...' : 'Cadastrar'}
                 </button>
             </form>
             {msg && <p>{msg}</p>}
-
             <h2>Transações Cadastradas</h2>
             <ul>
                 {transacoes.length === 0 ? (
@@ -104,6 +133,7 @@ export default function TransactionForm() {
                             <strong>{transacao.descricao}</strong><br />
                             Valor: {transacao.valor}<br />
                             Tipo: {transacao.tipo}<br />
+                            Categoria: {transacao.categoria || 'N/A'}<br />
                             Data: {new Date(transacao.data).toLocaleDateString()}
                         </li>
                     ))
@@ -112,3 +142,4 @@ export default function TransactionForm() {
         </div>
     );
 }
+

@@ -21,4 +21,14 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
+router.get('/', async (req: Request, res: Response) => { // rota GET /api/metas
+    try {
+        const metas = await Metas.findAll(); // Busca todas as metas no banco
+        return res.status(200).json(metas); // Retorna as metas em formato JSON
+    } catch (error) {
+        console.error('Erro ao buscar metas:', error);
+        return res.status(500).json({ message: 'Erro interno ao buscar metas' });
+    }
+});
+
 export default router;

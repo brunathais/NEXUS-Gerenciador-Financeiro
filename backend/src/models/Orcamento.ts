@@ -7,6 +7,7 @@ class Orcamento extends Model {
     public essenciais!: number;
     public naoEssenciais!: number;
     public poupanca!: number;
+    public investimentos!: number;
 }
 
 Orcamento.init(
@@ -32,6 +33,10 @@ Orcamento.init(
             type: DataTypes.FLOAT,
             allowNull: false,
         },
+        investimentos: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        }
     },
     {
         sequelize,

@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../api';
-import { useNavigate } from 'react-router-dom';
 
 export default function MetasForm() {
     const [descricao, setDescricao] = useState('');
@@ -8,8 +7,21 @@ export default function MetasForm() {
     const [data, setData] = useState('');
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
+    const [metas, setMetas] = useState<any[]>([]);
 
-    const navigate = useNavigate();
+    const fetchMetas = async () => {
+        try {
+            const response = await api.get('/metas')
+            setMetas(response.data)
+        } catch (err) {
+            console.error('Erro ao carregar metas:', err);
+            setMsg('Erro ao carregar as metas');
+        }
+    }
+
+    useEffect(() => {
+        fetchMetas()
+    }, [])
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -18,7 +30,10 @@ export default function MetasForm() {
         try {
             await api.post('/metas', { descricao, valor, data });
             setMsg('meta criada com sucesso!');
-            setTimeout(() => navigate('/home'), 1000); // Redireciona após 1 segundo
+            fetchMetas();
+            setDescricao('');
+            setValor('');
+            setData('');
         } catch (err: any) {
             const msg = err?.response?.data?.message || 'Erro ao criar meta';
             setMsg(msg);
@@ -30,7 +45,7 @@ export default function MetasForm() {
     return (
 
         <div className="transaction-container">
-                 <link rel="stylesheet" href="metas.css" />
+            <link rel="stylesheet" href="metas.css" />
             <h1>Registrar meta</h1>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -67,6 +82,22 @@ export default function MetasForm() {
                 </button>
             </form>
             {msg && <p>{msg}</p>}
+
+            <h2>Metas Cadastradas</h2>
+            <ul>
+                {metas.length === 0 ? (
+                    <li>Nenhuma meta cadastrada</li>
+                ) : (
+                    metas.map((meta) => (
+                        <li key={meta.id}>
+                            <strong>{meta.descricao}</strong> <br />
+                            Valor: {meta.valor} <br />
+                            Data alvo: {new Date(meta.data).toLocaleDateString()}
+                        </li>
+                    ))
+                )}
+            </ul>
         </div>
     );
 }
+
