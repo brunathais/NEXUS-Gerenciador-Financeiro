@@ -21,8 +21,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/transacoes', transactionsRoutes);
 app.use('/api/metas', metaRoutes);
 app.use('/api/orcamentos', orcamentoRoutes)
-//app.use('/api/ContasBoletos', ContasBoletosRoutes);
-
 
 const port = Number(process.env.PORT || 3002);
 

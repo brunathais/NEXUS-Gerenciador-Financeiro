@@ -8,7 +8,7 @@ router.post('/', async (req: Request, res: Response) => {
     try {
         const { descricao, valor, tipo, data } = req.body;
         const orcamento = await Orcamento.create({ descricao, valor, tipo, data });
-        return res.status(201).json(transacao);
+        return res.status(201).json(orcamento);
     } catch (error) {
         console.error('Erro ao criar transação:', error);
         return res.status(500).json({ message: 'Erro interno ao criar transação' });
@@ -41,16 +41,17 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Atualizar uma transação existente
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const { descricao, valor, tipo, data } = req.body;
+        const { descricao, essenciais, naoEssenciais, imprevistos, poupanca, investimentos } = req.body;
         const orcamento = await Orcamento.findByPk(req.params.id);
 
         if (!orcamento) return res.status(404).json({ message: 'orcamento não encontrada' });
 
         orcamento.descricao = descricao;
-        /**orcamento.valor = valor;
-        orcamento.tipo = tipo;
-        orcamento.data = data;
-        */
+        orcamento.essenciais = essenciais;
+        orcamento.naoEssenciais = naoEssenciais;
+        orcamento.imprevistos = imprevistos;
+        orcamento.poupanca = poupanca;
+        orcamento.investimentos = investimentos;
 
         await orcamento.save();
         return res.status(200).json(orcamento);
@@ -75,4 +76,3 @@ router.delete('/:id', async (req: Request, res: Response) => {
 });
 
 export default router;
-

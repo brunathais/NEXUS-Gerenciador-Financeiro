@@ -5,10 +5,7 @@ import Home from './components/Home';
 import TransactionForm from './components/TransactionForm';
 import MetasForm from './components/MetasForm';
 import Header from './components/header';
-import EducacaoFinanceira from './components/EducacaoFinanceira';
-import ContasBoletos from './components/ContasBoletos';
-import OrcamentoForm from './components/Orcamento';
-import TransactionSummary from './components/TransactionSummary';
+import OrcamentoForm from './components/OrcamentoForm';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -16,21 +13,22 @@ export default function App() {
   };
 
   return (
-    <Routes>
-      <Route path='/' element={<Navigate to="/cadastro" />} />
-      <Route path='/cadastro' element={<Cadastro />} />
-      <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
-      <Route path='/home' element={<Home />} />
-      <Route path="/transacoes" element={<TransactionForm />} />
-      <Route path="/metas" element={<MetasForm />} />
-      <Route path="/orcamentos" element={<OrcamentoForm />} />
-      <Route path="/soma-categoria" element={<TransactionSummary />} />
-          
+    <>
+      <Header />
 
-      <Route path ="/header" element = {<Header/>} />
-      <Route path ="/Educacao-financeira" element = {<EducacaoFinanceira/>} />
-      <Route path="/contas" element={<ContasBoletos />} />
-    </Routes>
+      {/*conteudo principal que muda de acordo com a rota */}
+
+
+      <Routes>
+        <Route path='/' element={<Navigate to="/cadastro" />} />
+        <Route path='/cadastro' element={<Cadastro />} />
+        <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
+        <Route path='/home' element={<Home />} />
+        <Route path="/transacoes" element={<TransactionForm />} />
+        <Route path="/metas" element={<MetasForm />} />
+        <Route path="/orcamentos" element={<OrcamentoForm />} />
+      </Routes>
+    </>
   );
 }
 
