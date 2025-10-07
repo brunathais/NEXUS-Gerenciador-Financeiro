@@ -1,5 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { group } from "console"
 import sequelize from "../db"
 import Transacao from "../models/Transacao";
 

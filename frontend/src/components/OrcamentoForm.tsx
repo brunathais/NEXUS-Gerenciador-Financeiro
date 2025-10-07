@@ -136,6 +136,25 @@ export default function BudgetForm() {
                         </li>
                     ))
                 )}
+                {/**useEffect(() => {
+    async function checkCategoria(orcamentoId: number) {
+        try {
+            const response = await api.get(`/transacoes/orcamento/${orcamentoId}/soma?categoria=essenciais`);
+            if (response.data.alerta) {
+                alert(response.data.alerta);
+            }
+        } catch (err) {
+            console.error('Erro ao verificar transações:', err);
+        }
+    }
+
+    if (orcamentos.length > 0) {
+        orcamentos.forEach((orcamento) => {
+            checkCategoria(orcamento.id);
+        });
+    }
+}, [orcamentos]);
+ */}
             </ul>
         </div>
     );

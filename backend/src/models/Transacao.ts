@@ -1,14 +1,14 @@
-
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db';
-
+import Orcamento from './Orcamento';
 class Transacao extends Model {
     public id!: number;
     public descricao!: string;
     public valor!: number;
-    public tipo!: string;
+    public tipo!: string; // 'entrada' ou 'saida'
+    public categoria!: string; // Ex: 'essenciais', 'naoEssenciais', etc. Categoria pode ser null para entradas
+    public orcamentoId!: number | null; // Relacionado ao ID do orçamento
     public data!: Date;
-    public categoria!: string | null; // Categoria pode ser null para entradas
 }
 
 Transacao.init(
@@ -26,25 +26,22 @@ Transacao.init(
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        tipo: {
+        categoria: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        orcamentoId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: Orcamento,
+                key: 'id'
+            }
         },
         data: {
             type: DataTypes.DATE,
             allowNull: false,
-        },
-        categoria: {
-            type: DataTypes.STRING,
-            allowNull: true, // Categoria é opcional para entradas
-            validate: {
-                // Validação da categoria somente para 'Saída'
-                isIn: {
-                    args: [['Essenciais', 'Não essenciais', 'Imprevistos']],
-                    msg: 'Categoria inválida. Deve ser "Essenciais", "Não essenciais" ou "Imprevistos".',
-                },
-            },
-        },
+        }
     },
     {
         sequelize,
@@ -53,7 +50,6 @@ Transacao.init(
         timestamps: false,
     }
 );
-
 export default Transacao;
 
 
