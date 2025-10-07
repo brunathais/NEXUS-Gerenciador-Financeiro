@@ -6,8 +6,8 @@ const router = Router();
 // Criar uma nova transação
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const { descricao, valor, tipo, data } = req.body;
-        const transacao = await Transacao.create({ descricao, valor, tipo, data });
+        const { descricao, valor, tipo, data, categoria } = req.body;
+        const transacao = await Transacao.create({ descricao, valor, tipo, data, categoria });
         return res.status(201).json(transacao);
     } catch (error) {
         console.error('Erro ao criar transação:', error);
@@ -41,7 +41,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Atualizar uma transação existente
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const { descricao, valor, tipo, data } = req.body;
+        const { descricao, valor, tipo, data, categoria } = req.body;
         const transacao = await Transacao.findByPk(req.params.id);
 
         if (!transacao) return res.status(404).json({ message: 'Transação não encontrada' });
@@ -50,6 +50,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         transacao.valor = valor;
         transacao.tipo = tipo;
         transacao.data = data;
+        transacao.categoria = categoria;
 
         await transacao.save();
         return res.status(200).json(transacao);

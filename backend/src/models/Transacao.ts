@@ -1,5 +1,6 @@
+
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../db'; // Adjust path if needed
+import sequelize from '../db';
 
 class Transacao extends Model {
     public id!: number;
@@ -7,6 +8,7 @@ class Transacao extends Model {
     public valor!: number;
     public tipo!: string;
     public data!: Date;
+    public categoria!: string | null; // Categoria pode ser null para entradas
 }
 
 Transacao.init(
@@ -32,6 +34,17 @@ Transacao.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
+        categoria: {
+            type: DataTypes.STRING,
+            allowNull: true, // Categoria é opcional para entradas
+            validate: {
+                // Validação da categoria somente para 'Saída'
+                isIn: {
+                    args: [['Essenciais', 'Não essenciais', 'Imprevistos']],
+                    msg: 'Categoria inválida. Deve ser "Essenciais", "Não essenciais" ou "Imprevistos".',
+                },
+            },
+        },
     },
     {
         sequelize,
@@ -42,3 +55,4 @@ Transacao.init(
 );
 
 export default Transacao;
+
