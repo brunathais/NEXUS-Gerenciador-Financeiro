@@ -1,49 +1,66 @@
-import { useEffect, useState } from "react"
-import { api } from "../api";
+import { useState, useEffect } from 'react';
+import { api } from '../api';
 
 const TransactionSummary = () => {
-    const [somaCategoria, setSomaCategoria] = useState<any[]>([]);
+    const [resumo, setResumo] = useState<any>({
+        somaEntradas: 0,
+        somaSaidas: 0,
+        somaSaidasPorCategoria: [],
+        saldo: 0,
+    });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchSomaCategoria = async () => {
-        {/* Função que faz uma requisição GET para a rota /transacoes/soma-categoria e armazena o resultado no estado somaPorCategoria */ }
+    const fetchResumo = async () => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await api.get('/transacoes/soma-categoria');
-            setSomaCategoria(response.data); {/*Armazena a resposta da API, que é a soma das transações por categoria*/ }
+            const response = await api.get('/transacoes/resumo');
+            setResumo(response.data); // Atualiza os dados do resumo
         } catch (err) {
-            console.error('erro ao buscar soma das categorias:', err);
-            setError('erro ao carregar a soma das categorias')
+            console.error('Erro ao buscar resumo das transações:', err);
+            setError('Erro ao carregar o resumo');
         } finally {
-            {/*finally*/ }
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+
     useEffect(() => {
-        {/*Chama a função fetchSomaPorCategoria quando o componente for montado para buscar os dados de soma */ }
-        {/*useEffect*/ }
-        fetchSomaCategoria();
+        fetchResumo(); // Chama a função para obter os dados de resumo quando o componente for montado
     }, []);
 
     return (
         <div className="transaction-summary-container">
-            <h2>Resumo das Transações por Categoria</h2>
+            <h2>Resumo das Transações</h2>
             {loading ? (
                 <p>Carregando...</p>
             ) : error ? (
                 <p>{error}</p>
             ) : (
-                <div className="cards-container">
-                    {/*Itera sobre as categorias retornadas e exibe cada uma em um card com a soma correspondente.*/}
-                    {somaCategoria.map((categoria: { categoria: string; soma: number }) => (
-                        <div key={categoria.categoria} className="card">
-                            <h3>{categoria.categoria}</h3>
-                            <p>Soma: {categoria.soma.toFixed(2)}</p>
-                        </div>
-                    ))}
+                <div className="summary-cards-container">
+                    <div className="card">
+                        <h3>Total Entradas</h3>
+                        <p>{resumo.somaEntradas.toFixed(2)}</p>
+                    </div>
+                    <div className="card">
+                        <h3>Total Saídas</h3>
+                        <p>{resumo.somaSaidas.toFixed(2)}</p>
+                    </div>
+                    <div className="card">
+                        <h3>Saldo (Entradas - Saídas)</h3>
+                        <p>{resumo.saldo.toFixed(2)}</p>
+                    </div>
+                    <div className="card">
+                        <h3>Saídas por Categoria</h3>
+                        <ul>
+                            {resumo.somaSaidasPorCategoria.map((categoria: { categoria: string; soma: number }) => (
+                                <li key={categoria.categoria}>
+                                    <strong>{categoria.categoria}:</strong> {categoria.soma.toFixed(2)}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             )}
         </div>
@@ -51,4 +68,3 @@ const TransactionSummary = () => {
 };
 
 export default TransactionSummary;
-

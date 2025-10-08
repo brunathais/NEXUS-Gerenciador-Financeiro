@@ -109,4 +109,43 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
 });
 
+// Nova rota para obter as somas desejadas
+router.get('/resumo', async (req: Request, res: Response) => {
+    try {
+        // Soma total de Entradas
+        const somaEntradas = await Transacao.sum('valor', {
+            where: { tipo: 'Entrada' },
+        });
+
+        // Soma total de Saídas
+        const somaSaidas = await Transacao.sum('valor', {
+            where: { tipo: 'Saída' },
+        });
+
+        // Soma de Saídas por Categoria
+        const somaSaidasPorCategoria = await Transacao.findAll({
+            attributes: [
+                'categoria',
+                [sequelize.fn('SUM', sequelize.col('valor')), 'soma'],
+            ],
+            where: { tipo: 'Saída' },
+            group: ['categoria'],
+            raw: true,
+        });
+
+        // Calcular o saldo (Entradas - Saídas)
+        const saldo = somaEntradas - somaSaidas;
+
+        return res.status(200).json({
+            somaEntradas,
+            somaSaidas,
+            somaSaidasPorCategoria,
+            saldo,
+        });
+    } catch (error) {
+        console.error('Erro ao calcular os resumos de transações:', error);
+        return res.status(500).json({ message: 'Erro ao calcular os resumos' });
+    }
+});
+
 export default router;
