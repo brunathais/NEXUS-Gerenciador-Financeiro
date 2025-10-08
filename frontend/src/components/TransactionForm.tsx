@@ -41,6 +41,7 @@ export default function TransactionForm() {
 
             //add imprevistos!!
             // Envia os dados da transação para o backend
+
             await api.post('/transacoes', { descricao, valor, tipo, data, categoria: tipo === 'Saída' ? categoria : null });
             setMsg('Transação criada com sucesso!');
             fetchTransacoes(); // Atualiza a lista de transações após cadastrar uma nova

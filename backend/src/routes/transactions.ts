@@ -16,13 +16,12 @@ router.get('/', async (req: Request, res: Response) => { // rota GET /api/transa
     }
 });
 
+
 router.get('/soma-categoria', async (req: Request, res: Response) => {
     try {
         const somaCategoria = await Transacao.findAll({
-            attributes: [
-                'categoria',
-                [sequelize.fn('SUM', sequelize.col('valor')), 'soma'], //Soma os valores das transações para cada categoria
-            ],
+            attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'soma']], //Soma os valores das transações para cada categoria
+            where: { tipo: 'Saída' }, // << só despesas
             group: ['categoria'], //Agrupa os resultados por categoria, ou seja, calcula a soma para cada categoria separadamente.
             raw: true,
         });
@@ -39,53 +38,75 @@ router.get('/soma-categoria', async (req: Request, res: Response) => {
  * POST /api/transacoes
  * body: { descricao: string, valor: number, tipo: string, data: Date }
  */
+// POST /api/transacoes
 router.post('/', async (req: Request, res: Response) => {
     try {
         const { descricao, valor, tipo, data, categoria } = req.body;
 
-        // Validação dos campos (os campos tipo e descricao são obrigatórios, etc.)
-        if (!descricao || !valor || !tipo || !data || !categoria) {
-            return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+        if (!descricao || !valor || !tipo || !data) {
+            return res.status(400).json({ message: 'Descrição, valor, tipo e data são obrigatórios.' });
         }
 
-        // Cria a transação no banco
-        const transacao = await Transacao.create({ descricao, valor, tipo, data, categoria });
-
-        const orcamento = await Orcamento.findOne();
-        if (!orcamento) {
-            return res.status(500).json({ message: 'erro ao encontrar orcamento, orcamento não encontrado' })
+        if (tipo === 'Saída' && !categoria) {
+            return res.status(400).json({ message: 'Categoria é obrigatória para transações de saída.' });
         }
 
-        let gastoTotal = 0;
+        const transacao = await Transacao.create({
+            descricao,
+            valor,
+            tipo,
+            data,
+            categoria: tipo === 'Saída' ? categoria : null,
+        });
 
-        const transacoesCategoria = await Transacao.findAll({
-            where: {
-                categoria,
-                tipo: 'Saída',
-            }
-        })
-
-        gastoTotal = transacoesCategoria.reduce((total, transacao) => total + transacao.valor, 0);
-
-        let alerta = '';
-        if (categoria === 'Essenciais' && gastoTotal > orcamento.essenciais) {
-            alerta = 'Limite de orçamento para essenciais ultrapassado!';
-        } else if (categoria === 'Não Essenciais' && gastoTotal > orcamento.essenciais) {
-            alerta = 'Limite de orçamento para Não Essenciais ultrapassado!';
-        } else if (categoria === 'Imprevistos' && gastoTotal > orcamento.essenciais) {
-            alerta = 'Limite de orçamento para Imprevistos ultrapassado!';
-        }
-
-        return res.status(201).json({
-            transacao,
-            alerta: alerta || 'transação cadastrada com sucesso!'
-        })
-        // Retorna a transação criada
+        // ... (resto do seu código de orçamento/alerta)
+        return res.status(201).json(transacao);
     } catch (error) {
         console.error('Erro ao cadastrar transação:', error);
         return res.status(500).json({ message: 'Erro interno ao cadastrar transação' });
     }
 });
 
+// PUT /api/transacoes/:id
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const { descricao, valor, tipo, data, categoria } = req.body;
+        const transacao = await Transacao.findByPk(req.params.id);
+
+        if (!transacao) return res.status(404).json({ message: 'Transação não encontrada' });
+
+        if (!descricao || !valor || !tipo || !data) {
+            return res.status(400).json({ message: 'Descrição, valor, tipo e data são obrigatórios.' });
+        }
+        if (tipo === 'Saída' && !categoria) {
+            return res.status(400).json({ message: 'Categoria é obrigatória para transações de saída.' });
+        }
+
+        transacao.descricao = descricao;
+        transacao.valor = valor;
+        transacao.tipo = tipo;
+        transacao.data = data;
+        transacao.categoria = tipo === 'Saída' ? categoria : null;
+
+        await transacao.save();
+        return res.status(200).json(transacao);
+    } catch (error) {
+        console.error('Erro ao atualizar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao atualizar transação' });
+    }
+});
+
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const transacao = await Transacao.findByPk(req.params.id);
+        if (!transacao) return res.status(404).json({ message: 'Transação não encontrada' });
+
+        await transacao.destroy(); //destroy é um método do Sequelize que deleta o registro do banco de dados.
+        return res.status(200).json({ message: 'Transação deletada com sucesso' });
+    } catch (error) {
+        console.error('Erro ao deletar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao deletar transação' });
+    }
+});
 
 export default router;

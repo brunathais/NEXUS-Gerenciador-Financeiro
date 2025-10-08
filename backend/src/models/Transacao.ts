@@ -1,4 +1,3 @@
-
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db';
 
@@ -6,9 +5,9 @@ class Transacao extends Model {
     public id!: number;
     public descricao!: string;
     public valor!: number;
-    public tipo!: string;
+    public tipo!: 'Entrada' | 'Saída';
     public data!: Date;
-    public categoria!: string | null; // Categoria pode ser null para entradas
+    public categoria!: 'Essenciais' | 'Não essenciais' | 'Imprevistos' | null;
 }
 
 Transacao.init(
@@ -27,7 +26,8 @@ Transacao.init(
             allowNull: false,
         },
         tipo: {
-            type: DataTypes.STRING,
+            // evita valores fora do esperado
+            type: DataTypes.ENUM('Entrada', 'Saída'),
             allowNull: false,
         },
         data: {
@@ -35,13 +35,15 @@ Transacao.init(
             allowNull: false,
         },
         categoria: {
-            type: DataTypes.STRING,
-            allowNull: true, // Categoria é opcional para entradas
+            // pode ser null em 'Entrada'
+            type: DataTypes.ENUM('Essenciais', 'Não essenciais', 'Imprevistos'),
+            allowNull: true,
             validate: {
-                // Validação da categoria somente para 'Saída'
-                isIn: {
-                    args: [['Essenciais', 'Não essenciais', 'Imprevistos']],
-                    msg: 'Categoria inválida. Deve ser "Essenciais", "Não essenciais" ou "Imprevistos".',
+                // roda sempre; só exige quando for Saída
+                requiredWhenSaida(this: Transacao, value: string | null) {
+                    if (this.tipo === 'Saída' && !value) {
+                        throw new Error('Categoria é obrigatória para transações de saída.');
+                    }
                 },
             },
         },
@@ -51,8 +53,15 @@ Transacao.init(
         modelName: 'Transacao',
         tableName: 'transacoes',
         timestamps: false,
+        // alternativa (modelo-level) se preferir:
+        // validate: {
+        //   categoriaObrigatoriaParaSaida() {
+        //     if ((this as any).tipo === 'Saída' && !(this as any).categoria) {
+        //       throw new Error('Categoria é obrigatória para transações de saída.');
+        //     }
+        //   },
+        // },
     }
 );
 
 export default Transacao;
-
