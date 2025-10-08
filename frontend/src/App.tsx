@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import TransactionForm from './components/TransactionForm';
 import MetasForm from './components/MetasForm';
+import OrcamentoForm from './components/OrcamentoForm';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -11,13 +12,21 @@ export default function App() {
   };
 
   return (
-    <Routes>
-      <Route path='/' element={<Navigate to="/cadastro" />} />
-      <Route path='/cadastro' element={<Cadastro />} />
-      <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
-      <Route path='/home' element={<Home />} />
-      <Route path="/transacoes" element={<TransactionForm />} />
-      <Route path="/metas" element={<MetasForm />} />
-    </Routes>
+    <>
+
+      {/*conteudo principal que muda de acordo com a rota */}
+
+
+      <Routes>
+        <Route path='/' element={<Navigate to="/cadastro" />} />
+        <Route path='/cadastro' element={<Cadastro />} />
+        <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
+        <Route path='/home' element={<Home />} />
+        <Route path="/transacoes" element={<TransactionForm />} />
+        <Route path="/metas" element={<MetasForm />} />
+        <Route path="/orcamentos" element={<OrcamentoForm />} />
+      </Routes>
+    </>
   );
 }
+
