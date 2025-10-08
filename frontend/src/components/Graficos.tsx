@@ -1,12 +1,43 @@
 import React from "react";
-import './graficos.css';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import '../styles/graficos.css';
+
+// Registrar os componentes necessários do Chart.js
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export function Graficos() {
+    const data = {
+        labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
+        datasets: [
+            {
+                label: 'Vendas',
+                data: [1000, 1500, 2000, 2500, 3000, 3500],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            },
+        ],
+    };
+    
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top' as const,
+            },
+            title: {
+                display: true,
+                text: 'Gráfico de Barras - Controle Financeiro'
+            }
+        }
+    };
 
     return (
-        <div className="grafico-container">
-            <h2>Controle Financeiro</h2>
+        <div className="grafico-Barra">
+            <h2>Controle Financeiro - Gráficos</h2>
+            <Bar data={data} options={options} />
         </div>
     );
 
 }
+
+export default Graficos;
