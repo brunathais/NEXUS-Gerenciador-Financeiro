@@ -7,7 +7,7 @@ export default function Home() {
    
     const navigate = useNavigate();
 
-        const handleNavigation = (route) => {
+        const handleNavigation = (route: string): void => {
         navigate(route);
     };
 
@@ -28,8 +28,10 @@ export default function Home() {
             <div className="sidebar" id="sidebar">
                 <h1>NEXUS</h1>
                 <ul>
-                    <li><a href="#">Dashboard</a></li><br />
-
+                    <li>
+                        <a href="#">Dashboard</a>
+                        <br />
+                    </li>                    
                 </ul>
             </div>
             

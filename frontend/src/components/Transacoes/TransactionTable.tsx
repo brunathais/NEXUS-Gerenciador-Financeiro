@@ -49,6 +49,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ transactions }) => 
                                     setSelectedTransactions([]);
                                 }
                             }}
+                            title="Selecionar todas as transações - 01"
                         />
                     </th>
                     <th>Data</th>
@@ -66,6 +67,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({ transactions }) => 
                                 type="checkbox"
                                 checked={selectedTransactions.includes(transaction.id)}
                                 onChange={() => toggleSelectTransaction(transaction.id)}
+                                title="Selecionar todas as transações - 02"
                             />
                         </td>
                         <td>{transaction.data}</td>
