@@ -17,7 +17,7 @@ export function Graficos() {
             },
         ],
     };
-    
+
     const options = {
         responsive: true,
         plugins: {
@@ -32,9 +32,14 @@ export function Graficos() {
     };
 
     return (
-        <div className="grafico-Barra">
+        <div className="title">
             <h2>Controle Financeiro - Gráficos</h2>
-            <Bar data={data} options={options} />
+            <div className="grafico-Barras">
+                <Bar data={data} options={options} />
+                <div className="roda-pe">
+                    <p>Vendas - 2024</p>
+                </div>
+            </div>
         </div>
     );
 
