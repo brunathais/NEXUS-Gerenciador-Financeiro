@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 
 const required = (value: string | undefined, key: string) => {
