@@ -1,3 +1,4 @@
+
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../db';
 
@@ -39,13 +40,14 @@ User.init(
       validate: { isEmail: true }
     },
     passwordHash: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false
     }
   },
   {
     sequelize,
-    tableName: 'Users'
+    tableName: 'users',
+    timestamps: true
   }
 );
 
