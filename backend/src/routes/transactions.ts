@@ -112,6 +112,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 // Nova rota para obter as somas desejadas
 router.get('/resumo', async (req: Request, res: Response) => {
     try {
+        
         // Soma total de Entradas
         const somaEntradas = await Transacao.sum('valor', {
             where: { tipo: 'Entrada' },

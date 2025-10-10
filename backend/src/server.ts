@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import sequelize from './db';
+import sequelize from './db'; // Use o arquivo de configuração do PostgreSQL
 import './models/User';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
@@ -25,11 +25,24 @@ app.use('/api/orcamentos', orcamentoRoutes)
 
 
 const port = Number(process.env.PORT || 3002);
-
-async function start() {
+/** com o sql server
+ * async function start() {
   try {
     await sequelize.authenticate();
     await sequelize.sync(); // ou sync({ alter: true }) em dev
+    app.listen(port, () => console.log(`API rodando em http://localhost:${port}`));
+  } catch (err) {
+    console.error('Falha ao conectar no banco:', err);
+    process.exit(1);
+  }
+}
+ */
+
+// com o postgres
+async function start() {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ force: false, alter: true });  // 'alter: true' ajusta as tabelas automaticamente
     app.listen(port, () => console.log(`API rodando em http://localhost:${port}`));
   } catch (err) {
     console.error('Falha ao conectar no banco:', err);
