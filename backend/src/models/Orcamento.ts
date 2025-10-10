@@ -1,3 +1,4 @@
+
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db';
 
@@ -6,7 +7,9 @@ class Orcamento extends Model {
     public descricao!: string;
     public essenciais!: number;
     public naoEssenciais!: number;
+    public imprevistos!: number;
     public poupanca!: number;
+    public investimentos!: number;
 }
 
 Orcamento.init(
@@ -28,10 +31,19 @@ Orcamento.init(
             type: DataTypes.FLOAT,
             allowNull: false,
         },
+        imprevistos: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            defaultValue: 0,
+        },
         poupanca: {
             type: DataTypes.FLOAT,
             allowNull: false,
         },
+        investimentos: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        }
     },
     {
         sequelize,
@@ -40,5 +52,4 @@ Orcamento.init(
         timestamps: false,
     }
 );
-
 export default Orcamento;
