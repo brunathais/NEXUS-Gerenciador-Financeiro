@@ -1,13 +1,12 @@
-import React from "react";
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Doughnut, Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import '../styles/graficos.css';
-import { color } from "chart.js/helpers";
 
 // Registrar os componentes necessários do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-export function Graficos() {
+export default function Graficos() {
     const data = {
         labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
         datasets: [
@@ -55,21 +54,52 @@ export function Graficos() {
             }
         }
     };
+// Componentes do grafico de donut =================================================================================================================================
+
+const data2 = {
+        labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'],
+        datasets: [
+            {
+                label: 'Gastos',
+                data: [750, 1250, 1750, 2250, 2750, 3250],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)'
+                ],
+            },
+        ],
+    };
+    
+    const options2 = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top' as const,
+            },
+            title: {
+                display: true,
+                text: 'Gráfico de Rosca - Controle Financeiro',
+                color: 'black'
+            }
+        }
+    };
 
     return (
         <div className="title" >
             <h2>Controle Financeiro - Gráficos</h2>
             <div className="roda-pe-progenitor">
-                <div className="grafico-Barras">
-                    <Bar data={data} options={options} />
-                    <div className="roda-pe">
-                        <p>Vendas - 2024</p>
-                    </div>
-                </div>
+                <Bar data={data} options={options} />
+                <p>Vendas - 2024</p>
+            </div>
+            <div>
+                <Doughnut data={data} options={options} />
+                <p>Gastos - 2024</p>
             </div>
         </div >
     );
 
 }
-
-export default Graficos;
