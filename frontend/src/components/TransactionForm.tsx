@@ -66,6 +66,21 @@ export default function TransactionForm() {
         }
     }
 
+    // Função para duplicar transação
+    const handleDuplicate = async (transacao: any) => {
+        try {
+            // Envia a requisição para o backend para duplicar a transação
+            await api.post('/transacoes/duplicar', { id: transacao.id });
+
+            // Atualiza a lista de transações após duplicar
+            fetchTransacoes();
+            setMsg('Transação duplicada com sucesso!');
+        } catch (err) {
+            console.error('Erro ao duplicar transação:', err);
+            setMsg('Erro ao duplicar transação');
+        }
+    };
+
     return (
         <div className="transaction-container">
             <h1>Registrar Transação</h1>
@@ -101,6 +116,23 @@ export default function TransactionForm() {
                         </select>
                     </div>
                 )}
+
+                <ul>
+                    {transacoes.length === 0 ? (
+                        <li>Não há transações registradas.</li>
+                    ) : (
+                        transacoes.map((transacao) => (
+                            <li key={transacao.id}>
+                                <strong>{transacao.descricao}</strong><br />
+                                Valor: {transacao.valor}<br />
+                                Tipo: {transacao.tipo}<br />
+                                Categoria: {transacao.categoria || 'N/A'}<br />
+                                Data: {new Date(transacao.data).toLocaleDateString()}<br />
+                                <button onClick={() => handleDuplicate(transacao)}>Duplicar</button>
+                            </li>
+                        ))
+                    )}
+                </ul>
 
                 <button type="submit" disabled={loading}>
                     {loading ? 'Cadastrando...' : 'Cadastrar'}

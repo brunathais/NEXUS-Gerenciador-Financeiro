@@ -70,3 +70,33 @@ GET /api/transacoes?tipo=Entrada
 Buscar todas as transações de uma categoria específica, sem filtro de data:
 
 GET /api/transacoes?categoria=Imprevistos
+
+
+arquivo TransactionForm.tsx
+
+handleDuplicate que vai chamar a rota do backend para duplicar a transação. Essa função será chamada quando o botão "Duplicar" for clicado
+
+
+rota /transacoes/duplicar no seu backend para copiar os dados da transação e criar uma nova com os mesmos dados, mas com uma data diferente, por exemplo, se você estiver criando uma transação mensal, a data será ajustada.
+
+Função handleDuplicate no frontend envia uma requisição POST para /transacoes/duplicar com o ID da transação que você deseja duplicar.
+
+No backend, a rota /duplicar recebe esse ID, encontra a transação correspondente no banco, e cria uma nova transação com os mesmos dados, mas com a data ajustada (exemplo: movendo um pagamento mensal para o próximo mês).
+
+A nova transação é então salva no banco e a lista de transações no frontend é atualizada automaticamente.
+
+Suponha que você tenha uma transação de pagamento de conta mensal:
+
+Descrição: "Pagamento de luz"
+
+Valor: 150.00
+
+Tipo: "Saída"
+
+Categoria: "Essenciais"
+
+Data: "2025-10-05"
+
+Quando o usuário clica no botão Duplicar:
+
+A nova transação será criada com a mesma descrição, valor, tipo e categoria, mas com a data ajustada para o próximo mês ("2025-11-05").

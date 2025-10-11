@@ -72,6 +72,33 @@ router.get('/soma-categoria', async (req: Request, res: Response) => {
 
 })
 
+router.post('/duplicar', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.body;  // ID da transação a ser duplicada
+
+        // Buscar a transação original
+        const transacaoOriginal = await Transacao.findByPk(id);
+        if (!transacaoOriginal) {
+            return res.status(404).json({ message: 'Transação não encontrada' });
+        }
+
+        // Criar a nova transação com os mesmos dados
+        const novaTransacao = await Transacao.create({
+            descricao: transacaoOriginal.descricao,
+            valor: transacaoOriginal.valor,
+            tipo: transacaoOriginal.tipo,
+            data: new Date(transacaoOriginal.data.setMonth(transacaoOriginal.data.getMonth() + 1)), // Ajusta a data para o próximo mês
+            categoria: transacaoOriginal.categoria,
+        });
+
+        return res.status(201).json(novaTransacao);  // Retorna a nova transação
+    } catch (error) {
+        console.error('Erro ao duplicar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao duplicar transação' });
+    }
+});
+
+
 router.get('/alertas', async (req: Request, res: Response) => {
     try {
         const transacoes = await Transacao.findAll({
