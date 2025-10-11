@@ -2,19 +2,37 @@ import { Router, Request, Response } from 'express';
 import Transacao from '../models/Transacao';
 import Orcamento from '../models/Orcamento';
 import sequelize from '../db';
+import { Op } from 'sequelize';
 
 const router = Router();
 
 // Rota para buscar todas as transações
-router.get('/', async (req: Request, res: Response) => { // rota GET /api/transacoes
+router.get('/', async (req: Request, res: Response) => {
     try {
-        const transacoes = await Transacao.findAll(); // Busca todas as transações no banco
-        return res.status(200).json(transacoes); // Retorna as transações em formato JSON
+        // Receber filtros via query string
+        const { tipo, categoria, dataInicio, dataFim } = req.query;
+
+        // Construir o "where" dinamicamente
+        const where: any = {};
+
+        if (tipo) where.tipo = tipo; // "Entrada" ou "Saída"
+        if (categoria) where.categoria = categoria; // "Essenciais", etc.
+
+        if (dataInicio || dataFim) {
+            where.data = {};
+            if (dataInicio) where.data[Op.gte] = new Date(dataInicio as string);
+            if (dataFim) where.data[Op.lte] = new Date(dataFim as string);
+        }
+
+        // Buscar transações com filtro
+        const transacoes = await Transacao.findAll({ where });
+        return res.status(200).json(transacoes);
     } catch (error) {
         console.error('Erro ao buscar transações:', error);
         return res.status(500).json({ message: 'Erro interno ao buscar transações' });
     }
 });
+
 
 router.get('/soma-categoria', async (req: Request, res: Response) => {
     try {

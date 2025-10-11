@@ -1,21 +1,32 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
-import TransactionSummary from './TransactionSummary';
 
 export default function TransactionForm() {
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState<number | string>('');
-    const [tipo, setTipo] = useState('Entrada'); // Tipo da transação (Entrada ou Saída)
+    const [tipo, setTipo] = useState('Entrada');
     const [data, setData] = useState('');
-    const [categoria, setCategoria] = useState(''); // Categoria é opcional para "Entrada"
+    const [categoria, setCategoria] = useState('');
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState<string | null>(null);
     const [transacoes, setTransacoes] = useState<any[]>([]);
 
-    // Função para buscar as transações
+    // Filtros
+    const [filtroDataInicio, setFiltroDataInicio] = useState('');
+    const [filtroDataFim, setFiltroDataFim] = useState('');
+    const [filtroTipo, setFiltroTipo] = useState('');
+    const [filtroCategoria, setFiltroCategoria] = useState('');
+
+    // Função para buscar as transações com filtros
     const fetchTransacoes = async () => {
         try {
-            const response = await api.get('/transacoes');
+            const params: any = {};
+            if (filtroTipo) params.tipo = filtroTipo;
+            if (filtroCategoria) params.categoria = filtroCategoria;
+            if (filtroDataInicio) params.dataInicio = filtroDataInicio;
+            if (filtroDataFim) params.dataFim = filtroDataFim;
+
+            const response = await api.get('/transacoes', { params });
             setTransacoes(response.data);
         } catch (err) {
             console.error('Erro ao carregar transações:', err);
@@ -23,34 +34,30 @@ export default function TransactionForm() {
         }
     };
 
-    // Chama a função fetchTransacoes quando o componente for montado
+    // Chama a função fetchTransacoes quando o componente for montado ou quando os filtros mudarem
     useEffect(() => {
         fetchTransacoes();
-    }, []);
+    }, [filtroTipo, filtroCategoria, filtroDataInicio, filtroDataFim]);
 
+    // Função para cadastrar transação
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setMsg(null);
         setLoading(true);
         try {
-            // Valida se categoria foi preenchida para Saída/Despesa
             if (tipo === 'Saída' && !categoria) {
                 setMsg('A categoria é obrigatória para transações de saída.');
                 return;
             }
 
-            //add imprevistos!!
-            // Envia os dados da transação para o backend
-
             await api.post('/transacoes', { descricao, valor, tipo, data, categoria: tipo === 'Saída' ? categoria : null });
             setMsg('Transação criada com sucesso!');
             fetchTransacoes(); // Atualiza a lista de transações após cadastrar uma nova
-            // Limpa o formulário após o envio
             setDescricao('');
             setValor('');
             setTipo('Entrada');
             setData('');
-            setCategoria(''); // Reseta a categoria
+            setCategoria('');
         } catch (err: any) {
             const msg = err?.response?.data?.message || 'Erro ao criar transação';
             setMsg(msg);
@@ -60,28 +67,16 @@ export default function TransactionForm() {
     }
 
     return (
-
         <div className="transaction-container">
             <h1>Registrar Transação</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="descricao">Descrição</label>
-                    <input
-                        id="descricao"
-                        value={descricao}
-                        onChange={(e) => setDescricao(e.target.value)}
-                        required
-                    />
+                    <input id="descricao" value={descricao} onChange={(e) => setDescricao(e.target.value)} required />
                 </div>
                 <div>
                     <label htmlFor="valor">Valor</label>
-                    <input
-                        id="valor"
-                        type="number"
-                        value={valor}
-                        onChange={(e) => setValor(e.target.value)}
-                        required
-                    />
+                    <input id="valor" type="number" value={valor} onChange={(e) => setValor(e.target.value)} required />
                 </div>
                 <div>
                     <label htmlFor="tipo">Tipo</label>
@@ -92,25 +87,13 @@ export default function TransactionForm() {
                 </div>
                 <div>
                     <label htmlFor="data">Data</label>
-                    <input
-                        id="data"
-                        type="date"
-                        value={data}
-                        onChange={(e) => setData(e.target.value)}
-                        required
-                    />
+                    <input id="data" type="date" value={data} onChange={(e) => setData(e.target.value)} required />
                 </div>
 
-                {/* Exibe o campo de categoria apenas se o tipo for "Saída" */}
                 {tipo === 'Saída' && (
                     <div>
                         <label htmlFor="categoria">Categoria</label>
-                        <select
-                            id="categoria"
-                            value={categoria}
-                            onChange={(e) => setCategoria(e.target.value)}
-                            required
-                        >
+                        <select id="categoria" value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
                             <option value="">Selecione</option>
                             <option value="Essenciais">Essenciais</option>
                             <option value="Não essenciais">Não essenciais</option>
@@ -123,7 +106,36 @@ export default function TransactionForm() {
                     {loading ? 'Cadastrando...' : 'Cadastrar'}
                 </button>
             </form>
+
             {msg && <p>{msg}</p>}
+
+            <h2>Filtros</h2>
+            <div>
+                <label htmlFor="filtroDataInicio">Data Início</label>
+                <input id="filtroDataInicio" type="date" value={filtroDataInicio} onChange={(e) => setFiltroDataInicio(e.target.value)} />
+            </div>
+            <div>
+                <label htmlFor="filtroDataFim">Data Fim</label>
+                <input id="filtroDataFim" type="date" value={filtroDataFim} onChange={(e) => setFiltroDataFim(e.target.value)} />
+            </div>
+            <div>
+                <label htmlFor="filtroTipo">Tipo</label>
+                <select id="filtroTipo" value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+                    <option value="">Todos</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saída">Saída</option>
+                </select>
+            </div>
+            <div>
+                <label htmlFor="filtroCategoria">Categoria</label>
+                <select id="filtroCategoria" value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}>
+                    <option value="">Todas</option>
+                    <option value="Essenciais">Essenciais</option>
+                    <option value="Não essenciais">Não essenciais</option>
+                    <option value="Imprevistos">Imprevistos</option>
+                </select>
+            </div>
+
             <h2>Transações Cadastradas</h2>
             <ul>
                 {transacoes.length === 0 ? (

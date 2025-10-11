@@ -44,3 +44,29 @@ npx sequelize-cli migration:generate --name alter-categoria-column
 
 
 O comando acima criará um arquivo de migração dentro da pasta migrations/ com um nome como 20251007000000-alter-categoria-column.js (o timestamp será gerado automaticamente).
+
+
+req.query permite pegar os parâmetros da URL, por exemplo:
+
+/api/transacoes?tipo=Saída&categoria=Essenciais&dataInicio=2025-10-01&dataFim=2025-10-10
+
+
+where é construído dinamicamente para filtrar conforme os parâmetros enviados.
+
+Op.gte e Op.lte são operadores do Sequelize para "maior ou igual" e "menor ou igual", usados para filtrar datas.
+
+Exemplo de uso
+
+Buscar todas as saídas de “Essenciais” no mês de outubro:
+
+GET /api/transacoes?tipo=Saída&categoria=Essenciais&dataInicio=2025-10-01&dataFim=2025-10-31
+
+
+Buscar todas as entradas:
+
+GET /api/transacoes?tipo=Entrada
+
+
+Buscar todas as transações de uma categoria específica, sem filtro de data:
+
+GET /api/transacoes?categoria=Imprevistos
