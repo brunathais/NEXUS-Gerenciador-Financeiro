@@ -2,12 +2,20 @@ import { useState, useEffect } from 'react';
 import { api } from '../api';
 
 const TransactionSummary = () => {
-    const [resumo, setResumo] = useState<any>({
+    const [resumo, setResumo] = useState<{
+        somaEntradas: number;
+        somaSaidas: number;
+        somaSaidasPorCategoria: { categoria: string; soma: number }[];
+        saldo: number;
+        alertas: { categoria: string; alerta: string }[];
+    }>({
         somaEntradas: 0,
         somaSaidas: 0,
         somaSaidasPorCategoria: [],
         saldo: 0,
+        alertas: [],
     });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +71,20 @@ const TransactionSummary = () => {
                     </div>
                 </div>
             )}
+
+            {resumo.alertas.length > 0 && (
+                <div className="alerta-container" style={{ border: '1px solid red', padding: '10px', marginTop: '20px' }}>
+                    <h3 style={{ color: 'red' }}>⚠ Alertas de Orçamento</h3>
+                    <ul>
+                        {resumo.alertas.map((alerta, index) => (
+                            <li key={index}>
+                                <strong>{alerta.categoria}:</strong> {alerta.alerta}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
         </div>
     );
 };

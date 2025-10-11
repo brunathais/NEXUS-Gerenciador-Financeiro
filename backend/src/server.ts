@@ -21,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/transacoes', transactionsRoutes);
 app.use('/api/metas', metaRoutes);
 app.use('/api/orcamentos', orcamentoRoutes)
+app.use('/api/soma-categoria', transactionsRoutes); // Rota para soma por categorias
 //app.use('/api/ContasBoletos', ContasBoletosRoutes);
 
 
