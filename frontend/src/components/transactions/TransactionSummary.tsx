@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api } from '../api';
+import { api } from '../../api';
 
 const TransactionSummary = () => {
     const [resumo, setResumo] = useState<{
@@ -63,7 +63,7 @@ const TransactionSummary = () => {
                         <h3>Saídas por Categoria</h3>
                         <ul>
                             {resumo.somaSaidasPorCategoria.map((categoria: { categoria: string; soma: number }) => (
-                                <li key={categoria.categoria}>
+                                <li key={categoria.categoria}> {/**key é unico para cada */}
                                     <strong>{categoria.categoria}:</strong> {categoria.soma.toFixed(2)}
                                 </li>
                             ))}

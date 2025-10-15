@@ -98,6 +98,44 @@ router.post('/duplicar', async (req: Request, res: Response) => {
     }
 });
 
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const { descricao, valor, tipo, data, categoria } = req.body;
+        const transacao = await Transacao.findByPk(req.params.id);
+
+        if (!transacao) {
+            return res.status(404).json({ message: 'Transação não encontrada' });
+        }
+
+        transacao.descricao = descricao;
+        transacao.valor = valor;
+        transacao.tipo = tipo;
+        transacao.data = data;
+        transacao.categoria = categoria;
+
+        await transacao.save();
+        return res.status(200).json(transacao);
+    } catch (error) {
+        console.error('Erro ao editar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao editar transação' });
+    }
+});
+
+router.delete('/:id', async (req: Request, res: Response) => {
+    try {
+        const transacao = await Transacao.findByPk(req.params.id);
+        if (!transacao) {
+            return res.status(404).json({ message: 'Transação não encontrada' });
+        }
+
+        await transacao.destroy();
+        return res.status(204).send();  // Status 204 indica que foi excluído com sucesso
+    } catch (error) {
+        console.error('Erro ao excluir transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao excluir transação' });
+    }
+});
+
 
 router.get('/alertas', async (req: Request, res: Response) => {
     try {
