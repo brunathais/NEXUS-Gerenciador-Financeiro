@@ -4,9 +4,8 @@ import Login from './components/Login';
 import Home from './components/Home';
 
 import MetasForm from './components/MetasForm';
-import TransactionSummary from './components/transactions/TransactionSummary';
 import OrcamentoForm from './components/OrcamentoForm';
-import TransactionPage from './pages/TransactionPage';
+import TransactionPage from './components/transactions/TransactionPage';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -21,7 +20,6 @@ export default function App() {
       <Route path='/home' element={<Home />} />
       <Route path="/transacoes" element={<TransactionPage />} />
       <Route path="/metas" element={<MetasForm />} />
-      <Route path="/resumo" element={<TransactionSummary />} />
       <Route path="/orcamentos" element={<OrcamentoForm />} />
     </Routes>
   );

@@ -18,3 +18,11 @@ export type Filtros = {
     tipo: '' | Tipo; //aqui pode ser vazio, 'Entrada' ou 'Saída' pois é usado para filtro
     categoria: '' | Exclude<Categoria, null>; // exclui null das opções de categoria
 };
+
+export type TransactionSummaryData = {
+    somaEntradas: number;
+    somaSaidas: number;
+    somaSaidasPorCategoria: { categoria: string; soma: number }[];
+    saldo: number;
+    alertas: { categoria: string; alerta: string }[];
+};
