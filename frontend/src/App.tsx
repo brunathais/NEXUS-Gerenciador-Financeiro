@@ -3,7 +3,7 @@ import Cadastro from './components/Cadastro';
 import Login from './components/Login';
 import Home from './components/Home';
 
-import MetasForm from './components/MetasForm';
+import MetasForm from './components/metas/MetasForm';
 import OrcamentoForm from './components/OrcamentoForm';
 import TransactionPage from './components/transactions/TransactionPage';
 

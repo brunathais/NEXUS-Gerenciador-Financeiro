@@ -83,3 +83,34 @@
 .transaction-container p.error {
     color: #dc3545;
 }
+
+.meta-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+}
+
+.meta-card .bar {
+    background: #f3f4f6;
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.meta-card .fill {
+    height: 100%;
+    background: #10b981;
+}
+
+/* use seu tema */
+.meta-card .acoes-rapidas {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 12px;
+}
+
+.meta-card input {
+    width: 100%;
+}
