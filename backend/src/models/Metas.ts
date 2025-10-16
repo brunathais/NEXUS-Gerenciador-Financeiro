@@ -1,39 +1,50 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../db'; // Adjust path if needed
+import { Model, Optional } from 'sequelize';
 
-class Metas extends Model {
-    public id!: number;
-    public descricao!: string;
-    public valor!: number;
-    public data!: Date;
+interface MetasAtributes {
+    id: string;
+    nomeMeta: string;
+    valorTotal: number;
+    valorInicial: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+type MetasCreationAtributes = Optional<MetasAtributes, 'id' | 'createdAt' | 'updatedAt'>;
+
+class Metas extends Model<MetasAtributes, MetasCreationAtributes> implements MetasAtributes {
+    public id!: string;
+    public nomeMeta!: string;
+    public valorTotal!: number;
+    public valorInicial!: number;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+
 }
 
 Metas.init(
     {
         id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
+            type: 'UUID',
+            defaultValue: 'UUIDV4',
+            primaryKey: true
         },
-        descricao: {
-            type: DataTypes.STRING,
-            allowNull: false,
+        nomeMeta: {
+            type: 'STRING(120)',
+            allowNull: false
         },
-        valor: {
-            type: DataTypes.FLOAT,
-            allowNull: false,
+        valorTotal: {
+            type: 'FLOAT',
+            allowNull: false
         },
-        data: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
+        valorInicial: {
+            type: 'FLOAT',
+            allowNull: false
+        }
     },
     {
-        sequelize,
-        modelName: 'Metas',
-        tableName: 'metas',
-        timestamps: false,
+        sequelize: require('../db').default,
+        tableName: 'Metas'
     }
 );
 
-export default Metas;
+export default MetasAtributes;

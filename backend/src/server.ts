@@ -1,13 +1,10 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import sequelize from './db'; // Use o arquivo de configuração do PostgreSQL
+import sequelize from './db';
 import './models/User';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
-import transactionsRoutes from './routes/transactions';
-import metaRoutes from './routes/metas';
-import orcamentoRoutes from './routes/orcamento';
 
 const app = express();
 
@@ -18,32 +15,12 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
-app.use('/api/transacoes', transactionsRoutes);
-app.use('/api/metas', metaRoutes);
-app.use('/api/orcamentos', orcamentoRoutes)
-app.use('/api/soma-categoria', transactionsRoutes); // Rota para soma por categorias
-//app.use('/api/ContasBoletos', ContasBoletosRoutes);
+const port = Number(process.env.PORT || 3000);
 
-
-const port = Number(process.env.PORT || 3002);
-/** com o sql server
- * async function start() {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync(); // ou sync({ alter: true }) em dev
-    app.listen(port, () => console.log(`API rodando em http://localhost:${port}`));
-  } catch (err) {
-    console.error('Falha ao conectar no banco:', err);
-    process.exit(1);
-  }
-}
- */
-
-// com o postgres
 async function start() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: false, alter: true });  // 'alter: true' ajusta as tabelas automaticamente
+    await sequelize.sync(); // ou sync({ alter: true }) em dev
     app.listen(port, () => console.log(`API rodando em http://localhost:${port}`));
   } catch (err) {
     console.error('Falha ao conectar no banco:', err);
