@@ -1,32 +1,24 @@
-import { Router } from "express";
+import { Router, Request, Response } from 'express';
+import Metas from '../models/Metas';
 
 const router = Router();
 
-router.post("/metas", async (req, res) => {
-    try{
-        const{ nomeMeta, valorInicial, valorTotal } = req.body as {nomeMeta?: string, valorInicial?: number, valorTotal?: number}; 
-        if(!nomeMeta || !valorInicial || !valorTotal) {
-            return res.status(400).json({message: 'nomeMeta, valorInicial e valorTotal são obrigatórios.'});
+router.post('/', async (req: Request, res: Response) => {
+    try {
+        const { descricao, valor, data } = req.body;
+
+        // Validação dos campos (os campos tipo e descricao são obrigatórios, etc.)
+        if (!descricao || !valor || !data) {
+            return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
         }
-        // Lógica para salvar a meta no banco de dados
-        return res.status(201).json({message: 'Meta criada com sucesso.'});
-    } catch(err) { // Captura de erros
-        console.error(err); // Log do erro para depuração
-        return res.status(500).json({message: 'Erro interno ao criar meta.'}); // Erro genérico
+
+        const meta = await Metas.create({ descricao, valor, data });
+
+        return res.status(201).json(meta);
+    } catch (error) {
+        console.error('Erro ao cadastrar transação:', error);
+        return res.status(500).json({ message: 'Erro interno ao cadastrar meta' });
     }
+});
 
-    })
-
-    router.get("/metas",async (req, res) =>{
-        try{
-            // Lógica para buscar as metas no banco de dados
-            return res.json([]); // Retorna a lista de metas (atualmente vazia)
-        } catch(err) {
-            console.error(err); // Log do erro para depuração
-            return res.status(500).json({message: 'Erro interno ao buscar metas.'}); // Erro genérico
-
-
-
-        }
-    })
-    export default router;
+export default router;

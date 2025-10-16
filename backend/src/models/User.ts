@@ -1,3 +1,4 @@
+
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../db';
 
@@ -10,7 +11,7 @@ interface UserAttributes {
   updatedAt?: Date;
 }
 
-type UserCreationAttributes = Optional<UserAttributes, 'id' | 'passwordHash' | 'createdAt' | 'updatedAt'>;
+type UserCreationAttributes = Optional<UserAttributes, 'id' | 'passwordHash' | 'createdAt' | 'updatedAt'>; // Fields optional during creation
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
@@ -39,13 +40,14 @@ User.init(
       validate: { isEmail: true }
     },
     passwordHash: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false
     }
   },
   {
     sequelize,
-    tableName: 'Users'
+    tableName: 'users',
+    timestamps: true
   }
 );
 
