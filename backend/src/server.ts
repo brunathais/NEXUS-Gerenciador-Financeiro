@@ -8,6 +8,7 @@ import authRoutes from './routes/auth';
 import transactionsRoutes from './routes/transactions';
 import metaRoutes from './routes/metas';
 import orcamentoRoutes from './routes/orcamento';
+import contasRoutes from './routes/contas';
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use('/api/transacoes', transactionsRoutes);
 app.use('/api/metas', metaRoutes);
 app.use('/api/orcamentos', orcamentoRoutes)
 app.use('/api/soma-categoria', transactionsRoutes); // Rota para soma por categorias
-//app.use('/api/ContasBoletos', ContasBoletosRoutes);
+app.use('/api/contas', contasRoutes);
 
 
 const port = Number(process.env.PORT || 3002);
