@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { api } from '../api';
 import { useNavigate } from 'react-router-dom';
+import "../styles/conta.css";
+import ContaList from './ContaList';
 
 export default function ContaForm() {
   const [descricao, setDescricao] = useState('');
@@ -94,6 +96,7 @@ export default function ContaForm() {
         </button>
       </form>
       {msg && <p>{msg}</p>}
+      <ContaList />
     </div>
   );
 }

@@ -42,6 +42,8 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        title="Digite seu email"
+                        placeholder="Digite seu email"
                     />
                 </div>
                 <div>
@@ -52,6 +54,8 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         minLength={6}
+                        title="Digite sua senha"
+                        placeholder="Digite sua senha"
                     />
                 </div>
                 <button type="submit" disabled={loading}>
