@@ -1,98 +1,99 @@
-/* Reset geral */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* home.css */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #281349;
+    margin: 0;
+    padding: 0;
+    background-color: #1e1e2d;
+    /* Fundo escuro */
     color: white;
 }
 
-/* Estilo do container principal */
-.container {
-    display: flex;
-    height: 100vh;
-}
-
-/* Barra lateral */
-.sidebar {
-    background-color: #200b52;
-    width: 250px;
-    padding: 20px;
-    position: fixed;
-    height: 100%;
-    top: 0;
-    left: 0;
+.app-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    min-height: 100vh;
 }
 
-.sidebar h1 {
-    color: #ffffff;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.sidebar ul li {
-    margin-bottom: 15px;
-}
-
-.sidebar ul li a {
-    color: #a8a8ff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-/* Estilo dos botões na barra lateral */
-.sidebar ul li a:hover {
-    color: #d6aaff;
-}
-
-/* Área principal */
-.main-content {
-    margin-left: 250px;
-    padding: 20px;
-    width: 100%;
-    background-color: #2c0f52;
-    flex-grow: 1;
-}
-
-/* Estilo para a palavra "HOME" no topo */
-.home-title {
+.header {
+    background-color: #8A2BE2;
+    /* Roxo Nubank */
+    padding: 16px;
     text-align: center;
-    font-size: 36px;
-    margin-bottom: 40px;
 }
 
-/* Botões principais */
-.main-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
-
-.main-button {
-    background-color: #6f62ff;
+.header h1 {
+    font-size: 2.5rem;
     color: white;
-    padding: 15px 30px;
-    font-size: 18px;
-    text-decoration: none;
-    border-radius: 8px;
-    text-align: center;
-    width: 200px;
-    transition: background-color 0.3s;
 }
 
-.main-button:hover {
-    background-color: #5b53cc;
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.1rem;
+    transition: opacity 0.3s;
+}
+
+.navbar a:hover {
+    opacity: 0.7;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #2d2d3a;
+    /* Cartões com fundo mais escuro */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    font-size: 1.6rem;
+    color: #8A2BE2;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.btn-action {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 25px;
+    background-color: #8A2BE2;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-action:hover {
+    background-color: #5d1fa3;
+    transform: translateY(-3px);
+}
+
+/* Adicionando animação de fade-in para o conteúdo */
+.main-content {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
 }

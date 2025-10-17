@@ -1,0 +1,22 @@
+/* footer.css */
+.footer {
+    background-color: #2d2d3a;
+    /* Fundo escuro */
+    padding: 20px;
+    color: white;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-link {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1rem;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}

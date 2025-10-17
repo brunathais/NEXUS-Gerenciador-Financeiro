@@ -1,0 +1,57 @@
+/* sidebar.css */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #1e1e2d;
+    /* Fundo escuro */
+    padding: 20px;
+    color: white;
+    box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-title {
+    font-size: 1.8rem;
+    color: #8A2BE2;
+    /* Roxo */
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-menu li {
+    margin: 20px 0;
+}
+
+.sidebar-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: opacity 0.3s;
+}
+
+.sidebar-link:hover {
+    opacity: 0.7;
+}
+
+.sidebar-logout {
+    background-color: #8A2BE2;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1rem;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.sidebar-logout:hover {
+    background-color: #5d1fa3;
+}

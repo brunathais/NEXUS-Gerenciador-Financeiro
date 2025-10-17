@@ -1,8 +1,11 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Footer from './components/Footer';
 import Cadastro from './components/Cadastro';
 import Login from './components/Login';
 import Home from './components/Home';
-
 import MetasForm from './components/MetasForm';
 import OrcamentoForm from './components/OrcamentoForm';
 import TransactionPage from './components/transactions/TransactionPage';
@@ -13,14 +16,23 @@ export default function App() {
   };
 
   return (
-    <Routes>
-      <Route path='/' element={<Navigate to="/cadastro" />} />
-      <Route path='/cadastro' element={<Cadastro />} />
-      <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
-      <Route path='/home' element={<Home />} />
-      <Route path="/transacoes" element={<TransactionPage />} />
-      <Route path="/metas" element={<MetasForm />} />
-      <Route path="/orcamentos" element={<OrcamentoForm />} />
-    </Routes>
+    <div className="app-container">
+      <Header />
+      <div className="main-container">
+        <Sidebar />
+        <div className="content">
+          <Routes>
+            <Route path='/' element={<Navigate to="/cadastro" />} />
+            <Route path='/cadastro' element={<Cadastro />} />
+            <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
+            <Route path='/home' element={<Home />} />
+            <Route path="/transacoes" element={<TransactionPage />} />
+            <Route path="/metas" element={<MetasForm />} />
+            <Route path="/orcamentos" element={<OrcamentoForm />} />
+          </Routes>
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 }
