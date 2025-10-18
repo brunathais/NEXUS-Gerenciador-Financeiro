@@ -14,8 +14,9 @@ export default function Home() {
             <div className="sidebar" id="sidebar">
                 <h1>NEXUS</h1>
                 <ul>
-                    <li><a href="#">Dashboard</a></li><br />
-
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li><br />
                 </ul>
             </div>
             <div className="main-buttons">

@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Cadastro from './components/Cadastro';
 import Login from './components/Login';
 import Home from './components/Home';
-
 import MetasForm from './components/MetasForm';
 import OrcamentoForm from './components/OrcamentoForm';
 import TransactionPage from './components/transactions/TransactionPage';
