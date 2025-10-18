@@ -52,17 +52,20 @@ router.get('/soma-categoria', async (req: Request, res: Response) => {
 
         // Verificar se o orçamento foi ultrapassado
         const alertas = somaCategoria.map((categoria: any) => {
-            const categoriaLower = categoria.categoria?.toLowerCase(); // Garantir que a categoria seja minúscula
-            const limite = orcamento[categoriaLower as keyof Orcamento]; // Acessar com segurança usando 'keyof Orcamento'
+            const categoriaLower = categoria.categoria?.toLowerCase();
+            const limite = orcamento[categoriaLower as keyof Orcamento];
 
             if (limite !== undefined && categoria.soma > limite) {
                 return {
                     categoria: categoria.categoria,
                     alerta: `Orçamento ultrapassado em ${Math.abs(categoria.soma - limite).toFixed(2)} na categoria ${categoria.categoria}`,
+                    valorTransacao: categoria.soma,
+                    limiteOrcamento: limite
                 };
             }
             return null;
         }).filter(alerta => alerta !== null);
+
 
         return res.status(200).json({ somaCategoria, alertas });
     } catch (error) {
@@ -323,11 +326,14 @@ router.get('/resumo', async (req: Request, res: Response) => {
                     return {
                         categoria: categoria.categoria,
                         alerta: `Orçamento ultrapassado em ${(categoria.soma - limite).toFixed(2)} na categoria ${categoria.categoria}`,
+                        valorTransacao: categoria.soma,
+                        limiteOrcamento: limite
                     };
                 }
                 return null;
-            }).filter(Boolean) as { categoria: string; alerta: string }[];
+            }).filter(Boolean) as { categoria: string; alerta: string; valorTransacao: number; limiteOrcamento: number }[];
         }
+
 
         // Calcular saldo
         const saldo = (somaEntradas || 0) - (somaSaidas || 0);

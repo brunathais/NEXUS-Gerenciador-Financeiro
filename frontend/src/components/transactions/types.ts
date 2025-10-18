@@ -19,10 +19,31 @@ export type Filtros = {
     categoria: '' | Exclude<Categoria, null>; // exclui null das opções de categoria
 };
 
-export type TransactionSummaryData = {
+export type Orcamento = {
+    essenciais: number;  // Limite para a categoria "Essenciais"
+    naoEssenciais: number;  // Limite para a categoria "Não essenciais"
+    imprevistos: number;  // Limite para a categoria "Imprevistos"
+};
+
+// Alterando o tipo de alerta para incluir os valores de comparação
+export type Alertas = {
+    categoria: string;
+    alerta: string;
+    valorTransacao: number; // Valor da transação que ultrapassou o orçamento
+    limiteOrcamento: number; // Limite do orçamento para aquela categoria
+};
+
+interface AlertaOrcamento {
+    categoria: string;
+    alerta: string;
+    valorTransacao: number;
+    limiteOrcamento: number;
+}
+
+export interface TransactionSummaryData {
     somaEntradas: number;
     somaSaidas: number;
-    somaSaidasPorCategoria: { categoria: string; soma: number }[];
+    somaSaidasPorCategoria: Array<any>; // Ajuste conforme necessário para as categorias
     saldo: number;
-    alertas: { categoria: string; alerta: string }[];
-};
+    alertas: AlertaOrcamento[]; // Alteração aqui para refletir a nova estrutura
+}
