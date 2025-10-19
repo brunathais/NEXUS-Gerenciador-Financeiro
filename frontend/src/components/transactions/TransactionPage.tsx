@@ -62,20 +62,7 @@ export default function TransactionPage() {
                     <SummaryCards resumo={resumo} />  {/* Passa o resumo como prop */}
 
                     {/* Exibindo os alertas de orçamento */}
-                    {resumo.alertas.length > 0 && (
-                        <div style={{ backgroundColor: '#fdd', padding: '10px', borderRadius: '5px' }}>
-                            <h3 style={{ color: 'red' }}>Alertas de Orçamento:</h3>
-                            <ul>
-                                {resumo.alertas.map((alerta, index) => (
-                                    <li key={`${alerta.alerta}-${alerta.valorTransacao ?? ''}-${alerta.limiteOrcamento ?? ''}`} style={{ color: 'darkred' }}>
-                                        <strong>{alerta.alerta}</strong><br />
-                                        <strong>Valor da Transação:</strong> {alerta.valorTransacao?.toFixed(2)} <br />
-                                        <strong>Limite do Orçamento:</strong> {alerta.limiteOrcamento?.toFixed(2)}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                    
                 </>
             ) : (
                 <p>Carregando...</p>  // Exibe mensagem enquanto carrega os dados
