@@ -1,0 +1,43 @@
+.meta-card {
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+
+.progress {
+    margin: 1rem 0;
+}
+
+
+.bar {
+    background: #e0e0e0;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.fill {
+    background: #4caf50;
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+
+.numbers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+
+.totais {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
