@@ -20,12 +20,11 @@ export default function Home() {
                 </ul>
             </div>
             <div className="main-buttons">
-                    <a href="../transacoes/transacoes.html" className="main-button">Transação</a><br /> <br />
-                    <a href="../educacaoFinanceira/educacaoFinanceira.html" className="main-button">Educação Financeira</a><br /> <br />
-                    <a href="../orcamento/orcamento.html" className="main-button">Orçamento</a><br />  <br />
-                    <a href="../contas/contas.html" className="main-button">Contas e Boletos</a><br />  <br />
-                    <a href="../graficos/graficos.html" className="main-button">Gráficos</a><br />  <br />
-                    <a href="../metas/metas.html" className="main-button">Metas</a><br />  <br />
+                    <a href="/transacoes" className="main-button">Transação</a><br /> <br />
+                    <a href="/orcamentos" className="main-button">Orçamento</a><br />  <br />
+                    <a href="/contas" className="main-button">Contas e Boletos</a><br />  <br />
+                    <a href="/graficos" className="main-button">Gráficos</a><br />  <br />
+                    <a href="/metas" className="main-button">Metas</a><br />  <br />
                 </div>
         </>
     );
