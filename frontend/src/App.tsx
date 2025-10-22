@@ -2,10 +2,11 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Cadastro from './components/Cadastro';
 import Login from './components/Login';
 import Home from './components/Home';
-import MetasForm from './components/MetasForm';
+import MetasForm from './components/metas/MetasForm';
 import OrcamentoForm from './components/OrcamentoForm';
 import TransactionPage from './components/transactions/TransactionPage';
 import ContaForm from './components/ContaForm';
+import MetasPage from './components/metas/MetasPage';
 
 export default function App() {
   const handleLoginSuccess = () => {
@@ -19,7 +20,8 @@ export default function App() {
       <Route path='/login' element={<Login onSuccess={handleLoginSuccess} />} />
       <Route path='/home' element={<Home />} />
       <Route path="/transacoes" element={<TransactionPage />} />
-      <Route path="/metas" element={<MetasForm />} />
+      <Route path="/metas" element={<MetasPage />} />
+      <Route path="/metas/novo" element={<MetasForm />} />
       <Route path="/orcamentos" element={<OrcamentoForm />} />
       <Route path="contas" element={<ContaForm />} />
       
