@@ -11,7 +11,7 @@ type Conta = {
   observacao?: string;
 };
 
-export default function ContaList() {
+export default function ContaList({ onContaCadastrada }: { onContaCadastrada: undefined | Function }) {
   const [contas, setContas] = useState<Conta[]>([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function ContaList() {
     };
 
     fetchContas();
-  }, []);
+  }, [onContaCadastrada]);  // Atualiza quando a lista de contas for modificada
 
   async function alterarStatus(id: number, status: 'PENDENTE' | 'PAGO' | 'VENCIDO') {
     try {
@@ -34,7 +34,7 @@ export default function ContaList() {
         status,
         dataPagamento: status === 'PAGO' ? new Date().toISOString() : null, // Atribui a data de pagamento somente para o status PAGO
       };
-      
+
       await api.put(`/contas/${id}/status`, updatedConta);
 
       setContas(prevContas =>
@@ -46,6 +46,21 @@ export default function ContaList() {
       );
     } catch (err) {
       console.error('Erro ao alterar status da conta:', err);
+    }
+  }
+
+  async function handleExcluir(id: number) {
+    try {
+      await api.delete(`/contas/${id}`);
+      setContas(prevContas => prevContas.filter(conta => conta.id !== id));
+    } catch (err) {
+      console.error('Erro ao excluir conta:', err);
+    }
+  }
+
+  function handleEditar(conta: Conta) {
+    try{
+      await api.editar(`/conta/ `)
     }
   }
 
@@ -63,6 +78,8 @@ export default function ContaList() {
                 <button onClick={() => alterarStatus(conta.id, 'VENCIDO')}>Marcar como VENCIDO</button>
               </>
             )}
+            <button onClick={() => handleEditar(conta)}>Editar</button>
+            <button onClick={() => handleExcluir(conta.id)}>Excluir</button>
           </li>
         ))}
       </ul>

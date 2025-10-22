@@ -58,4 +58,3 @@ Conta.init(
 );
 
 export default Conta;
-

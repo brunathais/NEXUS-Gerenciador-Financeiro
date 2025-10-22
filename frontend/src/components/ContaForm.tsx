@@ -1,30 +1,67 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { api } from '../api';
-import { useNavigate } from 'react-router-dom';
+import ContaList from './ContaList';  // Certifique-se de que o componente ContaList está importado corretamente
 import "../styles/conta.css";
-import ContaList from './ContaList';
 
-export default function ContaForm() {
+type Conta = {
+  id: number;
+  descricao: string;
+  tipo: 'PAGAR' | 'RECEBER';
+  valor: number;
+  status: 'PENDENTE' | 'PAGO' | 'VENCIDO';
+  dataVencimento: string;
+  observacao?: string;
+};
+
+export default function ContaForm({ contaEdit, onContaCadastrada }: { contaEdit?: Conta, onContaCadastrada?: Function }) {
   const [descricao, setDescricao] = useState('');
   const [tipo, setTipo] = useState<'PAGAR' | 'RECEBER'>('PAGAR');
-  const [valor, setValor] = useState<number | string>('');
+  const [valor, setValor] = useState<number>(0);
   const [dataVencimento, setDataVencimento] = useState('');
   const [observacao, setObservacao] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const navigate = useNavigate();
+  // Preencher os campos com os dados da conta para edição
+  useEffect(() => {
+    if (contaEdit) {
+      setDescricao(contaEdit.descricao);
+      setTipo(contaEdit.tipo);
+      setValor(contaEdit.valor);
+      setDataVencimento(contaEdit.dataVencimento);
+      setObservacao(contaEdit.observacao || '');
+    }
+  }, [contaEdit]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setMsg(null);
+    setMsg(null);  // Limpa a mensagem antes de tentar enviar
     setLoading(true);
+
     try {
-      await api.post('/contas', { descricao, tipo, valor, dataVencimento, observacao });
-      setMsg('Conta cadastrada com sucesso!');
-      setTimeout(() => navigate('/contas'), 1000);
+      if (contaEdit) {
+        // Atualizar conta existente
+        await api.put(`/contas/${contaEdit.id}`, { descricao, tipo, valor, dataVencimento, observacao });
+        setMsg('Conta atualizada com sucesso!');
+      } else {
+        // Criar nova conta
+        await api.post('/contas', { descricao, tipo, valor, dataVencimento, observacao });
+        setMsg('Conta cadastrada com sucesso!');
+      }
+
+      // Limpar os campos após o envio
+      setDescricao('');
+      setTipo('PAGAR');
+      setValor(0);
+      setDataVencimento('');
+      setObservacao('');
+
+      // Atualizar a lista de contas (via callback onContaCadastrada)
+      if (onContaCadastrada) {
+        onContaCadastrada();  // Chama o callback para atualizar a lista
+      }
     } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Erro ao cadastrar conta';
+      const msg = err?.response?.data?.message || 'Erro ao cadastrar/atualizar conta';
       setMsg(msg);
     } finally {
       setLoading(false);
@@ -33,7 +70,7 @@ export default function ContaForm() {
 
   return (
     <div>
-      <h1>Cadastrar Conta</h1>
+      <h1>{contaEdit ? 'Editar Conta' : 'Cadastrar Conta'}</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Descrição</label>
@@ -62,7 +99,7 @@ export default function ContaForm() {
           <input 
             type="number" 
             value={valor} 
-            onChange={e => setValor(e.target.value)} 
+            onChange={e => setValor(Number(e.target.value))}  // Convertendo para number
             required 
             aria-label="Valor"
             placeholder="Digite o valor"
@@ -92,11 +129,15 @@ export default function ContaForm() {
           />
         </div>
         <button type="submit" disabled={loading}>
-          {loading ? 'Cadastrando...' : 'Cadastrar'}
+          {loading ? 'Cadastrando...' : contaEdit ? 'Atualizar' : 'Cadastrar'}
         </button>
       </form>
-      {msg && <p>{msg}</p>}
-      <ContaList />
+
+      {/* Exibir a mensagem de sucesso ou erro */}
+      {msg && <p style={{ color: 'green', fontWeight: 'bold' }}>{msg}</p>} 
+
+      {/* Lista de contas cadastradas abaixo do formulário */}
+      <ContaList onContaCadastrada={onContaCadastrada} />
     </div>
   );
 }
