@@ -5,10 +5,10 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface DadoGrafico { categoria: string; total: number; }
+interface transacoesPostgres { tipo: string; valor: number; }
 
 const Graficos: React.FC = () => {
-  const [dados, setDados] = useState<DadoGrafico[]>([]);
+  const [dados, setDados] = useState<transacoesPostgres[]>([]);
 
   useEffect(() => {
     const fetchDados = async () => {
@@ -24,11 +24,11 @@ const Graficos: React.FC = () => {
   }, []);
 
   const data = {
-    labels: dados.map(d => d.categoria),
+    labels: dados.map(d => d.tipo),
     datasets: [
       {
-        label: 'Total por categoria',
-        data: dados.map(d => d.total),
+        label: 'Valores por tipo',
+        data: dados.map(d => d.valor),
         backgroundColor: [
           '#36A2EB',
           '#FF6384',
@@ -42,6 +42,7 @@ const Graficos: React.FC = () => {
     ],
   };
 
+
   const options = {
     responsive: true,
     plugins: {
@@ -52,9 +53,11 @@ const Graficos: React.FC = () => {
   return (
     <div>
 
-      <h2>Gráfico de Vendas</h2>
+      <h2>Gráfico Entrada/Saída</h2>
 
-      {dados.length > 0 ? ( <Doughnut data={data} options={options} /> ): ( <p> Carregando dados... </p> )}
+      
+
+      {dados.length > 50 ? ( <Doughnut data={data} options={options} /> ): ( <p> Carregando dados... </p> )}
 
     </div>
   );
