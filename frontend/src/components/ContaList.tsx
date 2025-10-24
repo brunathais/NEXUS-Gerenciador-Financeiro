@@ -61,6 +61,8 @@ export default function ContaList() {
               <>
                 <button onClick={() => alterarStatus(conta.id, 'PAGO')}>Marcar como PAGO</button>
                 <button onClick={() => alterarStatus(conta.id, 'VENCIDO')}>Marcar como VENCIDO</button>
+                <button>editar</button>
+                <button>excluir</button>
               </>
             )}
           </li>
