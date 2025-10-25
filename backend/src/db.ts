@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import { GetDados } from '../src/server/GetDados'; /* <--------> Esse 'GetDados' é uma async function, e ela está localizada no server.ts, no backend */
 
 const required = (value: string | undefined, key: string) => {
   if (!value) throw new Error(`Missing env: ${key}`);
@@ -13,7 +14,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT || 5432),
     dialect: 'postgres',
-    logging: false,
+    logging: true,
     dialectOptions: {
       ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
     }
@@ -39,3 +40,5 @@ export default sequelize;
     }
   }
     */
+
+const getDados = new GetDados();

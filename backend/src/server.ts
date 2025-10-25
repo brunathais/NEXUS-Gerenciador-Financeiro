@@ -53,3 +53,12 @@ async function start() {
 }
 
 start();
+
+async function GetDados() {
+  try {
+    await sequelize.get();
+    console.log('Conexão com o banco de dados foi bem-sucedida.');
+  } catch (error) {
+    console.error('Não foi possível conectar ao banco de dados:', error);
+  }
+}

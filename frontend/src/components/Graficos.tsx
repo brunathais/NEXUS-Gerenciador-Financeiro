@@ -10,7 +10,7 @@ interface transacoesPostgres { tipo: string; valor: number; }
 const Graficos: React.FC = () => {
   const [dados, setDados] = useState<transacoesPostgres[]>([]);
 
-  useEffect(() => {
+  
     const fetchDados = async () => {
       try {
         const response = await axios.get('http://localhost:3001/api/graficos');
@@ -19,11 +19,9 @@ const Graficos: React.FC = () => {
         console.error('Erro ao carregar dados:', error);
       }
     };
+  
 
-    fetchDados();
-  }, []);
-
-  const data = {
+  const values = {
     labels: dados.map(d => d.tipo),
     datasets: [
       {
@@ -55,9 +53,7 @@ const Graficos: React.FC = () => {
 
       <h2>Gráfico Entrada/Saída</h2>
 
-      
-
-      {dados.length > 50 ? ( <Doughnut data={data} options={options} /> ): ( <p> Carregando dados... </p> )}
+      {dados.length > 50 ? ( <Doughnut data={values} options={options} /> ): ( <p> Carregando dados... </p> )}
 
     </div>
   );
