@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 type Conta = {
   id: number;
@@ -13,6 +14,7 @@ type Conta = {
 
 export default function ContaList() {
   const [contas, setContas] = useState<Conta[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Função de carregamento das contas
@@ -28,11 +30,12 @@ export default function ContaList() {
     fetchContas();
   }, []);
 
+  // Função para alterar status de uma conta
   async function alterarStatus(id: number, status: 'PENDENTE' | 'PAGO' | 'VENCIDO') {
     try {
       const updatedConta = {
         status,
-        dataPagamento: status === 'PAGO' ? new Date().toISOString() : null, // Atribui a data de pagamento somente para o status PAGO
+        dataPagamento: status === 'PAGO' ? new Date().toISOString() : null,
       };
       
       await api.put(`/contas/${id}/status`, updatedConta);
@@ -40,13 +43,31 @@ export default function ContaList() {
       setContas(prevContas =>
         prevContas.map(conta =>
           conta.id === id
-            ? { ...conta, ...updatedConta }  // Atualiza o status e a data de pagamento se for o caso
+            ? { ...conta, ...updatedConta }
             : conta
         )
       );
     } catch (err) {
       console.error('Erro ao alterar status da conta:', err);
     }
+  }
+
+  // Função para deletar uma conta com confirmação
+  async function deletarConta(id: number) {
+    const confirmar = window.confirm("Você tem certeza que deseja excluir esta conta?");
+    if (!confirmar) return;
+
+    try {
+      await api.delete(`/contas/${id}`);
+      setContas(prevContas => prevContas.filter(conta => conta.id !== id));
+    } catch (err) {
+      console.error('Erro ao excluir conta:', err);
+    }
+  }
+
+  // Função para editar uma conta
+  function editarConta(id: number) {
+    navigate(`/contas/editar/${id}`);
   }
 
   return (
@@ -61,8 +82,8 @@ export default function ContaList() {
               <>
                 <button onClick={() => alterarStatus(conta.id, 'PAGO')}>Marcar como PAGO</button>
                 <button onClick={() => alterarStatus(conta.id, 'VENCIDO')}>Marcar como VENCIDO</button>
-                <button>editar</button>
-                <button>excluir</button>
+                <button onClick={() => editarConta(conta.id)}>Editar</button>
+                <button onClick={() => deletarConta(conta.id)}>Excluir</button>
               </>
             )}
           </li>
