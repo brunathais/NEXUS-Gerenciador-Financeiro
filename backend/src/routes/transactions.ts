@@ -3,6 +3,7 @@ import Transacao from '../models/Transacao';
 import Orcamento from '../models/Orcamento';
 import sequelize from '../db';
 import { Op } from 'sequelize';
+import HistoricoTransacao from '../models/HistoricoTransacao';
 
 const router = Router();
 
@@ -226,13 +227,13 @@ router.get('/soma-ano', async (req: Request, res: Response) => {
 // POST /api/transacoes
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const { descricao, valor, tipo, data, categoria } = req.body;
+        const { descricao, valor, tipo, data, categoriaId, userId } = req.body;
 
-        if (!descricao || !valor || !tipo || !data) {
-            return res.status(400).json({ message: 'Descrição, valor, tipo e data são obrigatórios.' });
+        if (!descricao || !valor || !tipo || !data || !userId) {
+            return res.status(400).json({ message: 'Descrição, valor, tipo, data e userId são obrigatórios.' });
         }
 
-        if (tipo === 'Saída' && !categoria) {
+        if (tipo === 'Saída' && !categoriaId) {
             return res.status(400).json({ message: 'Categoria é obrigatória para transações de saída.' });
         }
 
@@ -241,16 +242,26 @@ router.post('/', async (req: Request, res: Response) => {
             valor,
             tipo,
             data,
-            categoria: tipo === 'Saída' ? categoria : null,
+            categoriaId: tipo === 'Saída' ? categoriaId : null,
+            userId,
         });
 
-        // ... (resto do seu código de orçamento/alerta)
+        // Gravar o histórico
+        await HistoricoTransacao.create({
+            transacaoId: transacao.id,
+            userId,
+            acao: 'Criado',
+            descricao: `Transação ${transacao.descricao} cadastrada.`,
+            dataAlteracao: new Date(),
+        });
+
         return res.status(201).json(transacao);
     } catch (error) {
         console.error('Erro ao cadastrar transação:', error);
         return res.status(500).json({ message: 'Erro interno ao cadastrar transação' });
     }
 });
+
 
 // PUT /api/transacoes/:id
 router.put('/:id', async (req: Request, res: Response) => {
@@ -271,7 +282,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         transacao.valor = valor;
         transacao.tipo = tipo;
         transacao.data = data;
-        transacao.categoria = tipo === 'Saída' ? categoria : null;
+        // transacao.categoria = tipo === 'Saída' ? categoria : null; //aqui categoria id ou nome
 
         await transacao.save();
         return res.status(200).json(transacao);

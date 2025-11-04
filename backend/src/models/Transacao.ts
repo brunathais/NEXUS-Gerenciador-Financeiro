@@ -1,5 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db';
+import Categoria from './Categoria'; // Importando o modelo de Categoria
+import User from './User'; // Importando o modelo de User
 
 class Transacao extends Model {
     public id!: number;
@@ -7,7 +9,8 @@ class Transacao extends Model {
     public valor!: number;
     public tipo!: 'Entrada' | 'Saída';
     public data!: Date;
-    public categoria!: 'Essenciais' | 'Não essenciais' | 'Imprevistos' | null;
+    public categoriaId?: number; // Relacionamento com Categoria
+    public userId!: string; // Relacionamento com o usuário que criou a transação
 }
 
 Transacao.init(
@@ -26,7 +29,6 @@ Transacao.init(
             allowNull: false,
         },
         tipo: {
-            // evita valores fora do esperado
             type: DataTypes.ENUM('Entrada', 'Saída'),
             allowNull: false,
         },
@@ -34,17 +36,20 @@ Transacao.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        categoria: {
-            // pode ser null em 'Entrada'
-            type: DataTypes.ENUM('Essenciais', 'Não essenciais', 'Imprevistos'),
+        categoriaId: {
+            type: DataTypes.INTEGER,
             allowNull: true,
-            validate: {
-                // roda sempre; só exige quando for Saída
-                requiredWhenSaida(this: Transacao, value: string | null) {
-                    if (this.tipo === 'Saída' && !value) {
-                        throw new Error('Categoria é obrigatória para transações de saída.');
-                    }
-                },
+            references: {
+                model: Categoria,
+                key: 'id',
+            },
+        },
+        userId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: User,
+                key: 'id',
             },
         },
     },
@@ -52,16 +57,16 @@ Transacao.init(
         sequelize,
         modelName: 'Transacao',
         tableName: 'transacoes',
-        timestamps: false,
-        // alternativa (modelo-level) se preferir:
-        // validate: {
-        //   categoriaObrigatoriaParaSaida() {
-        //     if ((this as any).tipo === 'Saída' && !(this as any).categoria) {
-        //       throw new Error('Categoria é obrigatória para transações de saída.');
-        //     }
-        //   },
-        // },
+        timestamps: true, // Timestamps para saber quando a transação foi criada e atualizada
     }
 );
+
+// Relacionamento entre Transacao e User (um para muitos)
+User.hasMany(Transacao, { foreignKey: 'userId' });
+Transacao.belongsTo(User, { foreignKey: 'userId' });
+
+// Relacionamento entre Transacao e Categoria (um para muitos)
+Categoria.hasMany(Transacao, { foreignKey: 'categoriaId' });
+Transacao.belongsTo(Categoria, { foreignKey: 'categoriaId' });
 
 export default Transacao;
