@@ -45,7 +45,7 @@ Transacao.init(
             },
         },
         userId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: User,
