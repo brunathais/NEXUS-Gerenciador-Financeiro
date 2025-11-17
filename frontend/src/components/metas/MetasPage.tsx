@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
 import MetaCard from './MetaCard';
+import MetaForm from './MetasForm';
 
 
 type Progresso = { totalPoupado: number; valorAlvo: number; porcentagem: number; falta: number; };
@@ -41,6 +42,8 @@ export default function MetasPage() {
 
     return (
         <div className="metas-page">
+
+            <MetaForm />
             <h1>Metas</h1>
             <div className="metas-list">
                 {metas.map(meta => (
