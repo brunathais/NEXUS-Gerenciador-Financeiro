@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import Conta from '../models/Conta';
-import { Op } from 'sequelize';
 
 const router = Router();
 
@@ -17,7 +16,7 @@ router.post('/', async (req: Request, res: Response) => {
       tipo,
       valor,
       dataVencimento,
-      status: tipo === 'PAGAR' ? 'PENDENTE' : 'PENDENTE',
+      status: 'PENDENTE',
       observacao,
     });
 
@@ -36,6 +35,47 @@ router.get('/', async (req: Request, res: Response) => {
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: 'Erro ao listar contas' });
+  }
+});
+
+// 🔹 Buscar uma conta específica para edição
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const conta = await Conta.findByPk(req.params.id);
+    if (!conta) {
+      return res.status(404).json({ message: 'Conta não encontrada' });
+    }
+    return res.status(200).json(conta);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Erro ao buscar conta' });
+  }
+});
+
+// 🔹 Atualizar dados da conta (edição)
+router.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const { descricao, tipo, valor, dataVencimento, observacao } = req.body;
+
+    const conta = await Conta.findByPk(req.params.id);
+    if (!conta) {
+      return res.status(404).json({ message: 'Conta não encontrada' });
+    }
+
+    conta.descricao = descricao ?? conta.descricao;
+    conta.tipo = tipo ?? conta.tipo;
+    conta.valor = valor !== undefined ? Number(valor) : conta.valor;
+    conta.dataVencimento = dataVencimento
+      ? new Date(dataVencimento)
+      : conta.dataVencimento;
+    conta.observacao = observacao ?? conta.observacao;
+
+    await conta.save();
+
+    return res.status(200).json(conta);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Erro ao atualizar conta' });
   }
 });
 
@@ -81,7 +121,6 @@ router.post('/:id/lembrete', async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Lembrete não pode ser enviado.' });
     }
 
-    // Simulando o envio de lembrete (por e-mail ou outro serviço)
     conta.lembreteEnviado = true;
     await conta.save();
 

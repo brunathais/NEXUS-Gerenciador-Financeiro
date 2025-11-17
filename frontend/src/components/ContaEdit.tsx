@@ -20,13 +20,19 @@ export default function ContaEdit() {
             try {
                 const response = await api.get(`/contas/${id}`);
                 const { descricao, tipo, valor, dataVencimento, observacao } = response.data;
+
                 setDescricao(descricao);
                 setTipo(tipo);
                 setValor(valor);
-                setDataVencimento(dataVencimento);
-                setObservacao(observacao);
+
+                // garante formato yyyy-mm-dd
+                const data = dataVencimento ? String(dataVencimento).slice(0, 10) : '';
+                setDataVencimento(data);
+
+                setObservacao(observacao || '');
             } catch (err) {
                 console.error('Erro ao carregar a conta para edição:', err);
+                setMsg('Erro ao carregar conta para edição');
             }
         };
 
@@ -40,7 +46,13 @@ export default function ContaEdit() {
         setMsg(null);
         setLoading(true);
         try {
-            await api.put(`/contas/${id}`, { descricao, tipo, valor, dataVencimento, observacao });
+            await api.put(`/contas/${id}`, {
+                descricao,
+                tipo,
+                valor: Number(valor),
+                dataVencimento,
+                observacao,
+            });
             setMsg('Conta atualizada com sucesso!');
             setTimeout(() => navigate('/contas'), 1000);
         } catch (err: any) {
@@ -55,7 +67,6 @@ export default function ContaEdit() {
         <div>
             <h1>Editar Conta</h1>
             <form onSubmit={handleSubmit}>
-                {/* Campos de formulário semelhantes ao de cadastro */}
                 <div>
                     <label>Descrição</label>
                     <input
