@@ -31,7 +31,7 @@ router.post('/login', async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Credenciais inválidas.' });
         }
 
-        
+
 
         // 3) Gera token
         const secret = process.env.JWT_SECRET;
@@ -44,7 +44,9 @@ router.post('/login', async (req: Request, res: Response) => {
             secret,
             { expiresIn: '1d' }
         );
-             await sequelize.query('INSERT INTO acessosUnicos (usuario, data) VALUES ( '+ user.id+' , now()::date )on conflict do nothing' );
+        
+        // comentado para poder acessar mais de uma vez no mesmo dia
+        // await sequelize.query('INSERT INTO acessosUnicos (usuario, data) VALUES ( '+ user.id+' , now()::date )on conflict do nothing' );
 
 
         return res.json({
