@@ -10,17 +10,17 @@ import { api } from "../../api";
 export default function TransactionPage() {
     const [resumo, setResumo] = useState<TransactionSummaryData | null>(null);
 
-    useEffect(() => {
-        const fetchResumo = async () => {
-            try {
-                const { data } = await api.get('/transacoes/resumo');
-                setResumo(data); // Atualiza o estado com os dados do resumo
-            } catch (err) {
-                console.error('Erro ao carregar o resumo:', err);
-            }
-        };
+    const fetchResumo = async () => {
+        try {
+            const { data } = await api.get('/transacoes/resumo');
+            setResumo(data);  // Atualiza o estado com os dados do resumo
+        } catch (err) {
+            console.error('Erro ao carregar o resumo:', err);
+        }
+    };
 
-        fetchResumo();  // Chama a função para carregar os dados
+    useEffect(() => {
+        fetchResumo(); // Inicialmente carrega os dados do resumo
     }, []); // O efeito roda uma vez quando a página é carregada
 
     const tx = useTransactions();

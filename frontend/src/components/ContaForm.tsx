@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api';
 import { useNavigate } from 'react-router-dom';
-import "../styles/conta.css";
+// import '../styles/conta.css';
 import ContaList from './ContaList';
 
 export default function ContaForm() {
@@ -37,10 +37,10 @@ export default function ContaForm() {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Descrição</label>
-          <input 
-            value={descricao} 
-            onChange={e => setDescricao(e.target.value)} 
-            required 
+          <input
+            value={descricao}
+            onChange={e => setDescricao(e.target.value)}
+            required
             aria-label="Descrição"
             placeholder="Digite a descrição"
             title="Campo para inserir a descrição da conta"
@@ -48,8 +48,8 @@ export default function ContaForm() {
         </div>
         <div>
           <label>Tipo</label>
-          <select 
-            value={tipo} 
+          <select
+            value={tipo}
             onChange={e => setTipo(e.target.value as 'PAGAR' | 'RECEBER')}
             aria-label="Tipo de conta"
           >
@@ -59,11 +59,11 @@ export default function ContaForm() {
         </div>
         <div>
           <label>Valor</label>
-          <input 
-            type="number" 
-            value={valor} 
-            onChange={e => setValor(e.target.value)} 
-            required 
+          <input
+            type="number"
+            value={valor}
+            onChange={e => setValor(e.target.value)}
+            required
             aria-label="Valor"
             placeholder="Digite o valor"
             title="Campo para inserir o valor da conta"
@@ -84,8 +84,8 @@ export default function ContaForm() {
         </div>
         <div>
           <label>Observação</label>
-          <input 
-            value={observacao} 
+          <input
+            value={observacao}
             onChange={e => setObservacao(e.target.value)}
             title="Campo para inserir observações sobre a conta"
             placeholder="Digite uma observação (opcional)"
