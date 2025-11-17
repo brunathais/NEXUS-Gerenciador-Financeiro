@@ -3,6 +3,7 @@ import Transacao from '../models/Transacao';
 import Orcamento from '../models/Orcamento';
 import sequelize from '../db';
 import { Op } from 'sequelize';
+import { getBudgetLimit, toNumber } from '../helpers/budget';
 
 const router = Router();
 
@@ -35,42 +36,46 @@ router.get('/', async (req: Request, res: Response) => {
 
 
 router.get('/soma-categoria', async (req: Request, res: Response) => {
-    try {
-        const somaCategoria = await Transacao.findAll({
-            attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'soma']], //Soma os valores das transações para cada categoria
-            where: { tipo: 'Saída' }, // << só despesas
-            group: ['categoria'], //Agrupa os resultados por categoria, ou seja, calcula a soma para cada categoria separadamente.
-            raw: true,
-        });
+  try {
+    const somaCategoriaRaw = await Transacao.findAll({
+      attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'soma']],
+      where: { tipo: 'Saída' },
+      group: ['categoria'],
+      raw: true,
+    });
 
-        // Obter orçamento
-        const orcamento = await Orcamento.findOne(); // Você pode melhorar essa consulta caso tenha vários orçamentos
-        // Verificar se orcamento é nulo ou undefined
-        if (!orcamento) {
-            return res.status(404).json({ message: 'Orçamento não encontrado' });
-        }
+    // Garante que 'soma' é number
+    const somaCategoria = somaCategoriaRaw.map((r: any) => ({
+      categoria: r.categoria,
+      soma: toNumber(r.soma),
+    }));
 
-        // Verificar se o orçamento foi ultrapassado
-        const alertas = somaCategoria.map((categoria: any) => {
-            const categoriaLower = categoria.categoria?.toLowerCase(); // Garantir que a categoria seja minúscula
-            const limite = orcamento[categoriaLower as keyof Orcamento]; // Acessar com segurança usando 'keyof Orcamento'
-
-            if (limite !== undefined && categoria.soma > limite) {
-                return {
-                    categoria: categoria.categoria,
-                    alerta: `Orçamento ultrapassado em ${Math.abs(categoria.soma - limite).toFixed(2)} na categoria ${categoria.categoria}`,
-                };
-            }
-            return null;
-        }).filter(alerta => alerta !== null);
-
-        return res.status(200).json({ somaCategoria, alertas });
-    } catch (error) {
-        console.error('erro ao calcular a soma das transações', error);
-        return res.status(500).json({ message: 'erro interno ao calcular categorias' });
+    const orcamento = await Orcamento.findOne();
+    if (!orcamento) {
+      return res.status(404).json({ message: 'Orçamento não encontrado' });
     }
 
-})
+    const alertas = somaCategoria
+      .map((c) => {
+        const limite = getBudgetLimit(c.categoria, orcamento);
+        if (limite != null && c.soma > limite) {
+          return {
+            categoria: c.categoria,
+            alerta: `Orçamento ultrapassado em ${(c.soma - limite).toFixed(2)} na categoria ${c.categoria}`,
+            valorTransacao: c.soma,
+            limiteOrcamento: limite,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    return res.status(200).json({ somaCategoria, alertas });
+  } catch (error) {
+    console.error('erro ao calcular a soma das transações', error);
+    return res.status(500).json({ message: 'erro interno ao calcular categorias' });
+  }
+});
 
 router.post('/duplicar', async (req: Request, res: Response) => {
     try {
@@ -138,37 +143,45 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
 
 router.get('/alertas', async (req: Request, res: Response) => {
-    try {
-        const transacoes = await Transacao.findAll({
-            where: { tipo: 'Saída' },
-            attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'total']],
-            group: ['categoria'],
-            raw: true,
-        });
+  try {
+    const transacoesRaw = await Transacao.findAll({
+      where: { tipo: 'Saída' },
+      attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'total']],
+      group: ['categoria'],
+      raw: true,
+    });
 
-        const orcamento = await Orcamento.findOne();
-        if (!orcamento) {
-            return res.status(404).json({ message: 'Orçamento não encontrado' });
-        }
-        const alertas = transacoes.map((transacao: any) => {
-            const categoriaLower = transacao.categoria?.toLowerCase();
-            const limite = orcamento[categoriaLower as keyof Orcamento]; // Acessa o limite do orçamento com base na categoria da transação
-            if (limite !== undefined && transacao.total > limite) {
-                return {
-                    categoria: transacao.categoria,
-                    totalGasto: transacao.total,
-                    limite,
-                    diferenca: transacao.total - limite,
-                };
-            }
-            return null;
-        }).filter((alerta: any) => alerta !== null);
+    // Normaliza 'total' para number
+    const transacoes = transacoesRaw.map((t: any) => ({
+      categoria: t.categoria,
+      total: toNumber(t.total),
+    }));
 
-        return res.status(200).json(alertas);
-    } catch (error) {
-        console.error('Erro ao buscar alertas:', error);
-        return res.status(500).json({ message: 'Erro interno ao buscar alertas' });
+    const orcamento = await Orcamento.findOne();
+    if (!orcamento) {
+      return res.status(404).json({ message: 'Orçamento não encontrado' });
     }
+
+    const alertas = transacoes
+      .map((t) => {
+        const limite = getBudgetLimit(t.categoria, orcamento);
+        if (limite != null && t.total > limite) {
+          return {
+            categoria: t.categoria,
+            totalGasto: t.total,
+            limite,
+            diferenca: t.total - limite,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    return res.status(200).json(alertas);
+  } catch (error) {
+    console.error('Erro ao buscar alertas:', error);
+    return res.status(500).json({ message: 'Erro interno ao buscar alertas' });
+  }
 });
 
 router.get('/ultimas', async (req: Request, res: Response) => {
@@ -295,54 +308,47 @@ router.delete('/:id', async (req: Request, res: Response) => {
 });
 
 // Nova rota para obter as somas desejadas
-router.get('/resumo', async (req: Request, res: Response) => {
-    try {
-        // Soma total de Entradas
-        const somaEntradas = await Transacao.sum('valor', { where: { tipo: 'Entrada' } });
 
-        // Soma total de Saídas
-        const somaSaidas = await Transacao.sum('valor', { where: { tipo: 'Saída' } });
+router.get('/resumo', async (req, res) => {
+  try {
+    const somaEntradas = toNumber(await Transacao.sum('valor', { where: { tipo: 'Entrada' } }));
+    const somaSaidas   = toNumber(await Transacao.sum('valor', { where: { tipo: 'Saída' } }));
 
-        // Soma de Saídas por Categoria
-        const somaSaidasPorCategoria = await Transacao.findAll({
-            attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'soma']],
-            where: { tipo: 'Saída' },
-            group: ['categoria'],
-            raw: true,
-        });
+    const somaSaidasPorCategoria = await Transacao.findAll({
+      attributes: ['categoria', [sequelize.fn('SUM', sequelize.col('valor')), 'soma']],
+      where: { tipo: 'Saída' },
+      group: ['categoria'],
+      raw: true,
+    }).then(rows => rows.map(r => ({ categoria: r.categoria, soma: toNumber((r as any).soma) })));
 
-        // Obter orçamento
-        const orcamento = await Orcamento.findOne();
-        let alertas: { categoria: string; alerta: string }[] = [];
+    const orcamento = await Orcamento.findOne();
 
-        if (orcamento) {
-            alertas = somaSaidasPorCategoria.map((categoria: any) => {
-                const key = categoria.categoria?.toLowerCase(); // "essenciais", "não essenciais", etc
-                const limite = key ? (orcamento as any)[key] : 0;
-                if (limite && categoria.soma > limite) {
-                    return {
-                        categoria: categoria.categoria,
-                        alerta: `Orçamento ultrapassado em ${(categoria.soma - limite).toFixed(2)} na categoria ${categoria.categoria}`,
-                    };
-                }
-                return null;
-            }).filter(Boolean) as { categoria: string; alerta: string }[];
-        }
+    const alertas = (!orcamento ? [] : somaSaidasPorCategoria.map(cat => {
+      const limite = getBudgetLimit(cat.categoria, orcamento);
+      if (limite != null && cat.soma > limite) {
+        return {
+          categoria: cat.categoria,
+          alerta: `Orçamento ultrapassado em ${(cat.soma - limite).toFixed(2)} na categoria ${cat.categoria}`,
+          valorTransacao: cat.soma,
+          limiteOrcamento: limite,
+        };
+      }
+      return null;
+    }).filter(Boolean)) as any[];
 
-        // Calcular saldo
-        const saldo = (somaEntradas || 0) - (somaSaidas || 0);
+    const saldo = somaEntradas - somaSaidas;
 
-        return res.status(200).json({
-            somaEntradas: somaEntradas || 0,
-            somaSaidas: somaSaidas || 0,
-            somaSaidasPorCategoria,
-            saldo,
-            alertas, // <-- aqui é o importante
-        });
-    } catch (error) {
-        console.error('Erro ao calcular os resumos de transações:', error);
-        return res.status(500).json({ message: 'Erro ao calcular os resumos' });
-    }
+    return res.status(200).json({
+      somaEntradas,
+      somaSaidas,
+      somaSaidasPorCategoria,
+      saldo,
+      alertas,
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: 'Erro ao calcular os resumos' });
+  }
 });
 
 

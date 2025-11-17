@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/User';
+import sequelize from '../db';
 
 const router = Router();
 
@@ -30,6 +31,8 @@ router.post('/login', async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Credenciais inválidas.' });
         }
 
+
+
         // 3) Gera token
         const secret = process.env.JWT_SECRET;
         if (!secret) {
@@ -41,6 +44,10 @@ router.post('/login', async (req: Request, res: Response) => {
             secret,
             { expiresIn: '1d' }
         );
+        
+        // comentado para poder acessar mais de uma vez no mesmo dia
+        // await sequelize.query('INSERT INTO acessosUnicos (usuario, data) VALUES ( '+ user.id+' , now()::date )on conflict do nothing' );
+
 
         return res.json({
             token,

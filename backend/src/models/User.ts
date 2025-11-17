@@ -24,10 +24,11 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
 User.init(
   {
+
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING(120),
