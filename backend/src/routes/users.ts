@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/User';
+import sequelize from '../db';
 
 const router = Router();
 
@@ -31,6 +32,17 @@ router.post('/', async (req, res) => {
 router.get('/', async (_req, res) => {
   const users = await User.findAll({ attributes: ['id', 'name', 'email', 'createdAt'] });
   return res.json(users);
+});
+
+router.get('/relatorio-usuario', async (req, res) => {
+  //quero agrupar por mês e contar quantos usuários foram criados em cada mês
+
+  const [rows] = await sequelize.query(`select count(id_usuario) as total,
+	(extract (month from data ) || '/' || extract ( year from data )) as data
+  from acessos_usuarios
+  group by 2
+`);
+  return res.json(rows);
 });
 
 export default router;

@@ -24,6 +24,7 @@ app.use('/api/metas', metaRoutes);
 app.use('/api/orcamentos', orcamentoRoutes)
 app.use('/api/soma-categoria', transactionsRoutes); // Rota para soma por categorias
 app.use('/api/contas', contasRoutes);
+app.use('/relatorio-usuario', userRoutes);
 
 
 const port = Number(process.env.PORT || 3002);
