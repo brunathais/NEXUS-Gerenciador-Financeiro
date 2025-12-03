@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Cadastro from './components/Cadastro';
+import Cadastro from './components/Cadastro/Cadastro';
 import Login from './components/Login';
 import Home from './components/Home';
 import MetasForm from './components/metas/MetasForm';
