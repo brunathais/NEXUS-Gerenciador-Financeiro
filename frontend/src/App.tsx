@@ -1,6 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+<<<<<<< HEAD
 import Cadastro from './components/Cadastro/Cadastro';
 import Login from './components/Login';
+=======
+import Cadastro from './components/Cadastro';
+import Login from './components/login/Login';
+>>>>>>> bafa7101adc023f941b0860015ba8ae9e9a44fd1
 import Home from './components/Home';
 import MetasForm from './components/metas/MetasForm';
 import OrcamentoForm from './components/OrcamentoForm';
