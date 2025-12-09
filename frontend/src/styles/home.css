@@ -2,7 +2,7 @@
 .home-container {
     display: flex;
     min-height: 100vh;
-    background: linear-gradient(135deg, #4B0082, #7F00FF);
+    background: linear-gradient(135deg, #290046, #3d007a);
     color: white;
     font-family: "Inter", sans-serif;
 }
@@ -29,6 +29,7 @@
     font-weight: bold;
     margin-bottom: 40px;
     letter-spacing: 2px;
+    color: white;
 }
 
 .sidebar ul li {
@@ -107,4 +108,5 @@
 .card p {
     font-size: 14px;
     opacity: 0.85;
+    color: white;
 }
